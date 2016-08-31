@@ -19,6 +19,7 @@ var DATA_CASES = {
     DIGITAL_ONE_TEXT_TW0: 2,    // x and z axises can be interacted
     DIGITAL_ZERO_TEXT_THREE: 3  // all axises can be interacted
 };
+var dataCase = 0;
 // all the cases when 3d change to 2d
 var TYPE_OF_2D = {
     BASE_X: 0,          // base on the specific x value and use y and z axises to generate the 2d scatter
@@ -65,7 +66,7 @@ var selected2dPoint = {
 };
 
 // moving info when 2d scatter
-var moving2dOptions = {
+var movingOptions = {
     isMoving: false,
     start: {
         x: -1,
@@ -81,12 +82,15 @@ var moving2dOptions = {
 var dataHandler = {
     init: function () {
         var data = null;
+        var colNames = [];
         var i = 0;
 
         // get data from localStorage
         if (window.localStorage) {
             data = JSON.parse(localStorage.getItem('VS_DATA') ? localStorage.getItem('VS_DATA') : {});
             //var colNames = localStorage.getItem("vs_colNames").split(",");
+            colNames = ["subject", "count", "word"];
+            dataCase = 2;
         } else {
             alert('LocalStorage is not supported.');
             return;
@@ -164,12 +168,15 @@ var dataHandler = {
         chartOptions.x.length = chartOptions.x.max - chartOptions.x.min;
         chartOptions.y.length = chartOptions.y.max - chartOptions.y.min;
         chartOptions.z.length = chartOptions.z.max - chartOptions.z.min;
+        chartOptions.x.title = colNames[0];
+        chartOptions.y.title = colNames[1];
+        chartOptions.z.title = colNames[2];
     }
 };
 
 // all the methods related to chart handling
 var chartHandler = {
-    create3dChart: function () {
+    init3dChart: function () {
         chart3d = new Highcharts.Chart({
             chart: {
                 margin: 50,
@@ -196,7 +203,7 @@ var chartHandler = {
                     point: {
                         events: {
                             click: function(){
-                                //updatePoint(this.x, this.y, this.z);
+                                chartHandler.selectPoint(this.x, this.y, this.z);
                             }
                         }
                     }
@@ -305,19 +312,57 @@ var chartHandler = {
                 }
             });
         });
+
+        // set default operations
+        switch (dataCase) {
+            case DATA_CASES.DIGITAL_THREE_TEXT_ZERO:
+                // do something...
+                // haven't implemented
+                break;
+            case DATA_CASES.DIGITAL_TWO_TEXT_ONE:
+                // do something...
+                // haven't implemented
+                break;
+            case DATA_CASES.DIGITAL_ONE_TEXT_TW0:
+                $("#ypre").prop("disabled", true);
+                $("#ynext").prop("disabled", true);
+                break;
+            case DATA_CASES.DIGITAL_ZERO_TEXT_THREE:
+                // do something...
+                // haven't implemented
+                break;
+        }
     },
-    create2dChart: function () {
+    init2dChart: function () {
 
     },
     update: function (chart, data) {
         var series = chart.series;
-        while(series.length > 0) {
+        while (series.length > 0) {
             series[0].remove(false);
         }
         chart.addSeries({
             data: data,
             turboThreshold: chartOptions.count + 1
         });
+    },
+    selectPoint: function (x, y, z) {
+        selected3dPoint.x = x;
+        selected3dPoint.y = y;
+        selected3dPoint.z = z;
+
+        $("#spSelected").html("(" + x + ", " + y + ", " + z + ")");
+
+        for (var i = 0; i < chartOptions.count; i++) {
+            if(originData[i][0] == x && originData[i][1] == y && originData[i][2] == z){
+                var xText = originData[i][3];
+                var yText = originData[i][4]
+                var zText = originData[i][5];
+            }
+        }
+        $("#spXInfo").html(chartOptions.x.title + " (" + x + ") : " + xText);
+        $("#spYInfo").html(chartOptions.y.title + " (" + y + ") : " + yText);
+        $("#spZInfo").html(chartOptions.z.title + " (" + z + ") : " + zText);
     }
 };
 
@@ -327,5 +372,5 @@ $(function(){
 
     // when first load shows the 3d scatter chart
     // init the 3d scatter chart
-    chartHandler.create3dChart();
+    chartHandler.init3dChart();
 });

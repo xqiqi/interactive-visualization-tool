@@ -45,3 +45,55 @@ a:hover{
     height: 700px;
     margin-bottom: 50px;
 }
+
+#xpre,#xnext,#ypre,#ynext,#zpre,#znext{
+    color: #333;
+    background-color: #fff;
+    margin: 0 5px 5px 0;
+}
+#xpre:hover,#xnext:hover,#ypre:hover,#ynext:hover,#zpre:hover,#znext:hover{
+    background-color: #ffcc50;
+}
+#xpre:disabled,#xnext:disabled,#ypre:disabled,#ynext:disabled,#zpre:disabled,#znext:disabled{
+    background-color: #ccc;
+    cursor: auto;
+}
+.rItem{
+    position: relative;
+    margin: 20px 0;
+}
+.rDot{
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 6px;
+    background-color: #ffcc50;
+    cursor: pointer;
+    z-index: 99;
+}
+.dMax{
+    left: 255px;
+}
+.rLine{
+    width: 100%;
+    height: 2px;
+    background-color: #fff;
+}
+.rMax{
+    float: right;
+}
+.rMin,.rMax{
+    font-size: 12px;
+}
+.float{
+    position: absolute;
+    top: -24px;
+    font-size: 12px;
+    background-color: rgba(255,255,255,0.4);
+    border: 1px solid #fff;
+    border-radius: 2px;
+    text-align: center;
+    width: 80px;
+}

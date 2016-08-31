@@ -8,7 +8,56 @@
 </head>
 <body>
 
-<div id="operation"></div>
+<div id="operation">
+    <!-- 三维操作 -->
+    <div id="contentT">
+        <h1>3D</h1>
+
+        <div class="selected">
+            <p><b>Selected Point :</b> <span id="spSelected">NOTHING SELECTED</span></p>
+            <p>
+                <b>Selected Information : </b><br />
+                <span id="spXInfo">x : NOTHING SELECTED</span><br />
+                <span id="spYInfo">y : NOTHING SELECTED</span><br />
+                <span id="spZInfo">z : NOTHING SELECTED</span>
+            </p>
+        </div>
+
+        <div class="pointMove">
+            <button id="xpre">x-forward</button><button id="xnext">x-backward</button><br />
+            <button id="ypre">y-forward</button><button id="ynext">y-backward</button><br />
+            <button id="zpre">z-forward</button><button id="znext">z-backward</button>
+        </div>
+
+        <div class="range">
+            <p><b>Range Set :</b></p>
+            <div id="rx" class="rItem">
+                <div class="float" style="display: none;"></div>
+                <div class="rDot dMin"></div>
+                <div class="rDot dMax"></div>
+                <div class="rLine"></div>
+                x : <span class="rMin"></span>
+                <span class="rMax"></span>
+            </div>
+            <div id="ry" class="rItem">
+                <div class="float" style="display: none;"></div>
+                <div class="rDot dMin"></div>
+                <div class="rDot dMax"></div>
+                <div class="rLine"></div>
+                y : <span class="rMin"></span>
+                <span class="rMax"></span>
+            </div>
+            <div id="rz" class="rItem">
+                <div class="float" style="display: none;"></div>
+                <div class="rDot dMin"></div>
+                <div class="rDot dMax"></div>
+                <div class="rLine"></div>
+                z : <span class="rMin"></span>
+                <span class="rMax"></span>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div id="content">
     <div id="chart3d"></div>
