@@ -87,7 +87,7 @@ var dataHandler = {
 
         // get data from localStorage
         if (window.localStorage) {
-            data = JSON.parse(localStorage.getItem('VS_DATA') ? localStorage.getItem('VS_DATA') : {});
+            data = JSON.parse(localStorage.getItem('VS_DATA') ? localStorage.getItem('VS_DATA') : '');
             //var colNames = localStorage.getItem("vs_colNames").split(",");
             colNames = ["subject", "count", "word"];
             dataCase = 2;
