@@ -1,0 +1,47 @@
+html,body{
+    padding: 0;
+    margin: 0;
+    color: #333;
+    font-size: 14px;
+    font-family: 'Arial';
+    line-height: 20px;
+    -moz-user-select:none;
+    -webkit-user-select:none;
+    -ms-user-select:none;
+    -khtml-user-select:none;
+    user-select:none;
+}
+
+button{
+    width: 80px;
+    height: 22px;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: medium;
+}
+a{
+    color: #00a190;
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: underline;
+}
+
+#operation{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px;
+    height: 100%;
+    padding: 0 20px;
+    background-color: #00a190;
+    color: #fff;
+}
+#content{
+    padding-left: 300px;
+}
+#chart3d,#chart2d{
+    height: 700px;
+    margin-bottom: 50px;
+}

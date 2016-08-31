@@ -1,0 +1,22 @@
+{
+  "name": "interactive-visualization-tool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xqiqi/interactive-visualization-tool.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xqiqi/interactive-visualization-tool/issues"
+  },
+  "homepage": "https://github.com/xqiqi/interactive-visualization-tool#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
