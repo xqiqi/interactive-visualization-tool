@@ -46,18 +46,33 @@ a:hover{
     margin-bottom: 50px;
 }
 
-#xpre,#xnext,#ypre,#ynext,#zpre,#znext{
+#xpre,#xnext,#ypre,#ynext,#zpre,#znext,#sortAsc,#sortDesc{
     color: #333;
     background-color: #fff;
     margin: 0 5px 5px 0;
 }
-#xpre:hover,#xnext:hover,#ypre:hover,#ynext:hover,#zpre:hover,#znext:hover{
+#xpre:hover,#xnext:hover,#ypre:hover,#ynext:hover,#zpre:hover,#znext:hover,#sortAsc:hover,#sortDesc:hover{
     background-color: #ffcc50;
 }
-#xpre:disabled,#xnext:disabled,#ypre:disabled,#ynext:disabled,#zpre:disabled,#znext:disabled{
+#xpre:disabled,#xnext:disabled,#ypre:disabled,#ynext:disabled,#zpre:disabled,#znext:disabled,#sortAsc:disabled,#sortDesc:disabled{
     background-color: #ccc;
     cursor: auto;
 }
+#btnSave,#btnCancel{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 99;
+    color: #fff;
+    background-color: #ffcc50;
+}
+#btnSave:hover,#btnCancel:hover{
+    background-color: #fc7408;
+}
+#btnSave{
+    right: 100px;
+}
+
 .rItem{
     position: relative;
     margin: 20px 0;
@@ -96,4 +111,22 @@ a:hover{
     border-radius: 2px;
     text-align: center;
     width: 80px;
+}
+
+#moveDot{
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 2px;
+    background-color: #00a190;
+    box-shadow: 0 0 10px #00f;
+}
+#moveInfo{
+    position: absolute;
+    padding: 0 5px;
+    font-size: 12px;
+    color: #fff;
+    background-color: rgba(0,0,0,0.6);
+    border: 1px solid #333;
+    border-radius: 2px;
 }
