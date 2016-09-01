@@ -97,8 +97,10 @@ var chart = {
  ***** Define All The Methods Related To Data Handling
  *
  * [init] parpare data
+ * [update3dData] update data (x1, y1, z1) moves to (x2, y2, z2)
  * [get2dData] get data from origin data that 2d scatter needed
  * [update2dData] update data (x1, y1) moves to (x2, y2)
+ * [sort] based on the y values to sort x
  */
 var dataHandler = {
     init: function () {
@@ -189,9 +191,79 @@ var dataHandler = {
         chart.axises.x.length = chart.axises.x.max - chart.axises.x.min;
         chart.axises.y.length = chart.axises.y.max - chart.axises.y.min;
         chart.axises.z.length = chart.axises.z.max - chart.axises.z.min;
+        $('#rx .rMin').html(chart.axises.x.min);
+        $('#ry .rMin').html(chart.axises.y.min);
+        $('#rz .rMin').html(chart.axises.z.min);
+        $('#rx .rMax').html(chart.axises.x.max);
+        $('#ry .rMax').html(chart.axises.y.max);
+        $('#rz .rMax').html(chart.axises.z.max);
+
         chart.axises.x.title = colNames[0];
         chart.axises.y.title = colNames[1];
         chart.axises.z.title = colNames[2];
+    },
+    update3dData: function (x1, y1, z1, x2, y2, z2) {
+        for (var i = 0; i < scatter3dData.length; i++) {
+            var nowX = scatter3dData[i][0];
+            var nowY = scatter3dData[i][1];
+            var nowZ = scatter3dData[i][2];
+
+            if (x1 > x2) {
+                // move the point to front
+                if (nowX >= x2 && nowX < x1) {
+                    scatter3dData[i][0] = nowX + 1;
+                    originData[i][0] = nowX + 1;
+                } else if (nowX == x1) {
+                    scatter3dData[i][0] = x2;
+                    originData[i][0] = x2;
+                }
+            } else if (x1 < x2) {
+                // move the point to end
+                if (nowX <= x2 && nowX > x1) {
+                    scatter3dData[i][0] = nowX - 1;
+                    originData[i][0] = nowX - 1;
+                } else if (nowX == x1) {
+                    scatter3dData[i][0] = x2;
+                    originData[i][0] = x2;
+                }
+            }
+
+            if (y1 > y2) {
+                if (nowY >= y2 && nowY < y1) {
+                    scatter3dData[i][1] = nowY + 1;
+                    originData[i][1] = nowY + 1;
+                } else if (nowY == y1) {
+                    scatter3dData[i][1] = y2;
+                    originData[i][1] = y2;
+                }
+            } else if (y1 < y2) {
+                if (nowY <= y2 && nowY > y1) {
+                    scatter3dData[i][1] = nowY - 1;
+                    originData[i][1] = nowY - 1;
+                } else if (nowY == y1) {
+                    scatter3dData[i][1] = y2;
+                    originData[i][1] = y2;
+                }
+            }
+
+            if (z1 > z2) {
+                if (nowZ >= z2 && nowZ < z1) {
+                    scatter3dData[i][2] = nowZ + 1;
+                    originData[i][2] = nowZ + 1;
+                } else if (nowZ == z1) {
+                    scatter3dData[i][2] = z2;
+                    originData[i][2] = z2;
+                }
+            } else if (z1 < z2) {
+                if (nowZ <= z2 && nowZ > z1) {
+                    scatter3dData[i][2] = nowZ - 1;
+                    originData[i][2] = nowZ - 1;
+                } else if (nowZ == z1) {
+                    scatter3dData[i][2] = z2;
+                    originData[i][2] = z2;
+                }
+            }            
+        }
     },
     get2dData: function (type, value) {
         var i = 0;
@@ -313,6 +385,8 @@ var dataHandler = {
                 }
             }
         }
+    },
+    sort: function (type) {
     }
 };
 
@@ -478,6 +552,7 @@ var chartHandler = {
             case DATA_CASES.DIGITAL_ONE_TEXT_TW0:
                 $('#ypre').prop('disabled', true);
                 $('#ynext').prop('disabled', true);
+                $('#btnMergeY').prop('disabled', true);
                 break;
             case DATA_CASES.DIGITAL_ZERO_TEXT_THREE:
                 // do something...
@@ -794,6 +869,14 @@ var chartHandler = {
             data: data,
             turboThreshold: chart.count + 1
         });
+
+        $('#spSelected').html('NOTHING SELECTED');
+        $('#spXInfo').html('x : NOTHING SELECTED');
+        $('#spYInfo').html('y : NOTHING SELECTED');
+        $('#spZInfo').html('z : NOTHING SELECTED');
+        $('#spSelectedS').html('NOTHING SELECTED');
+        $('#spXInfoS').html('x : NOTHING SELECTED');
+        $('#spYInfoS').html('y : NOTHING SELECTED');
     },
     select3d: function (x, y, z) {
         chart.selectedPoint.x = x;
@@ -844,6 +927,9 @@ var chartHandler = {
     changeTo2d: function (type, value) {
         $('#chart3d').hide();
         $('#contentT').hide();
+        $('#btnMergeX').hide();
+        $('#btnMergeY').hide();
+        $('#btnMergeZ').hide();
         $('#chart2d').fadeIn();
         $('#contentS').fadeIn();
         $('#btnSave').fadeIn();
@@ -877,7 +963,7 @@ var chartHandler = {
         }
     },
     changeTo3d: function (type) {
-        if (type == 'save') {
+        if (type == 'SAVE') {
             // save
             // something to do ...
         }
@@ -905,6 +991,9 @@ var chartHandler = {
         $('#contentS').hide();
         $('#chart3d').fadeIn();
         $('#contentT').fadeIn();
+        $('#btnMergeX').fadeIn();
+        $('#btnMergeY').fadeIn();
+        $('#btnMergeZ').fadeIn();
         $('#chart2d .highcharts-tooltip').show();
     }
 };
@@ -1082,11 +1171,212 @@ $(function(){
     // init the 3d scatter chart
     chartHandler.init3dChart();
 
+    // init range set dots
+    var rDots = document.querySelectorAll('.rDot');
+    for(var i = 0; i < rDots.length; i++) {
+        new Dot(rDots[i]);
+    }
+    $('.rItem').hover(function(){
+        var l = parseInt($(this).children('.dMin').css('left').replace(/[a-z][A-Z]/ig, '')) + 5,
+            r = parseInt($(this).children('.dMax').css('left').replace(/[a-z][A-Z]/ig, '')) + 5,
+            pl = 0,
+            pr = 0,
+            id = $(this).attr('id');
+
+        if(id == 'rx'){
+            pl = Math.round(l / 260 * chart.axises.x.length) + 1;
+            pr = Math.round(r / 260 * chart.axises.x.length) + 1;
+        }else if(id == 'ry'){
+            pl = Math.round(l / 260 * chart.axises.y.length) + 1;
+            pr = Math.round(r / 260 * chart.axises.y.length) + 1;
+        }else{
+            pl = Math.round(l / 260 * chart.axises.z.length) + 1;
+            pr = Math.round(r / 260 * chart.axises.z.length) + 1;
+        }
+
+        $(this).children('.float').css('left', (r - l)/2 + l - 45).html('[ ' + pl + ' - ' + pr + ' ]').show();
+    },function(){
+        $(this).children('.float').hide();
+    });
+
+    // 3d chart btn click
+    $('#xpre').click(function(){
+        var p = chart.selectedPoint;
+        if (p.x == -1 && p.y == -1 && p.z == -1) {
+            alert("Nothing Selected!");
+            return;
+        }
+        if (p.x - 1 < chart.axises.x.min) {
+            alert("Aready Boundary!");
+            return;
+        }
+
+        dataHandler.update3dData(p.x, p.y, p.z, p.x - 1, p.y, p.z);
+        chartHandler.update(chart3d, scatter3dData);
+        chartHandler.select3d(p.x - 1, p.y, p.z);
+    });
+    $('#xnext').click(function(){
+        var p = chart.selectedPoint;
+        if (p.x == -1 && p.y == -1 && p.z == -1) {
+            alert("Nothing Selected!");
+            return;
+        }
+        if (p.x + 1 > chart.axises.x.max) {
+            alert("Aready Boundary!");
+            return;
+        }
+
+        dataHandler.update3dData(p.x, p.y, p.z, p.x + 1, p.y, p.z);
+        chartHandler.update(chart3d, scatter3dData);
+        chartHandler.select3d(p.x + 1, p.y, p.z);
+    });
+    $('#ypre').click(function(){
+        var p = chart.selectedPoint;
+        if (p.x == -1 && p.y == -1 && p.z == -1) {
+            alert("Nothing Selected!");
+            return;
+        }
+        if (p.y - 1 < chart.axises.y.min) {
+            alert("Aready Boundary!");
+            return;
+        }
+
+        dataHandler.update3dData(p.x, p.y, p.z, p.x, p.y - 1, p.z);
+        chartHandler.update(chart3d, scatter3dData);
+        chartHandler.select3d(p.x, p.y - 1, p.z);
+    });
+    $('#ynext').click(function(){
+        var p = chart.selectedPoint;
+        if (p.x == -1 && p.y == -1 && p.z == -1) {
+            alert("Nothing Selected!");
+            return;
+        }
+        if (p.y + 1 > chart.axises.y.max) {
+            alert("Aready Boundary!");
+            return;
+        }
+
+        dataHandler.update3dData(p.x, p.y, p.z, p.x, p.y + 1, p.z);
+        chartHandler.update(chart3d, scatter3dData);
+        chartHandler.select3d(p.x, p.y + 1, p.z);
+    });
+    $('#zpre').click(function(){
+        var p = chart.selectedPoint;
+        if (p.x == -1 && p.y == -1 && p.z == -1) {
+            alert("Nothing Selected!");
+            return;
+        }
+        if (p.z - 1 < chart.axises.z.min) {
+            alert("Aready Boundary!");
+            return;
+        }
+
+        dataHandler.update3dData(p.x, p.y, p.z, p.x, p.y, p.z - 1);
+        chartHandler.update(chart3d, scatter3dData);
+        chartHandler.select3d(p.x, p.y, p.z - 1);
+    });
+    $('#znext').click(function(){
+        var p = chart.selectedPoint;
+        if (p.x == -1 && p.y == -1 && p.z == -1) {
+            alert("Nothing Selected!");
+            return;
+        }
+        if (p.z + 1 > chart.axises.z.max) {
+            alert("Aready Boundary!");
+            return;
+        }
+
+        dataHandler.update3dData(p.x, p.y, p.z, p.x, p.y, p.z + 1);
+        chartHandler.update(chart3d, scatter3dData);
+        chartHandler.select3d(p.x, p.y, p.z + 1);
+    });
+    $('#btnMergeX').click(function(){
+
+    });
+    $('#btnMergeY').click(function(){
+
+    });
+    $('#btnMergeZ').click(function(){
+
+    });
+
     // 2d chart btn click
     $('#btnSave').click(function(){
-        chartHandler.changeTo3d('save');
+        chartHandler.changeTo3d('SAVE');
     });
     $('#btnCancel').click(function(){
-        chartHandler.changeTo3d('cancel');
+        chartHandler.changeTo3d('CANCEL');
+    });
+    $('#sortAsc').click(function(){
+        dataHandler.sort('ASC');
+        chartHandler.update(chart2d, scatter2dData);
+    });
+    $('#sortDesc').click(function(){
+        dataHandler.sort('DESC');
+        chartHandler.update(chart2d, scatter2dData);
     });
 });
+
+
+/**
+ ***** Range Set Dot *****
+ */
+function Dot(element){
+    var rItem = $(element).parent();
+    var info = $(rItem).children('.float');
+    var l = 0, r = 0;
+    var pl = 0, pr = 0;
+
+    this.handleStart = function(e){
+        document.addEventListener('mousemove', this.handleMove);
+        document.addEventListener('mouseup', this.handleEnd);
+    }.bind(this);
+
+    this.handleMove = function(e){
+        if(e.clientX <= 280 && e.clientX >= 20 && l <= r){
+            $(element).css('left', e.clientX - 25 + 'px');
+        }
+
+        l = parseInt($(rItem).children('.dMin').css('left').replace(/[a-z][A-Z]/ig, '')) + 5;
+        r = parseInt($(rItem).children('.dMax').css('left').replace(/[a-z][A-Z]/ig, '')) + 5;
+        var id = $(element).parent().attr('id');
+
+        if(id == 'rx'){
+            pl = Math.round(l / 260 * chart.axises.x.length) + 1;
+            pr = Math.round(r / 260 * chart.axises.x.length) + 1;
+        }else if(id == 'ry'){
+            pl = Math.round(l / 260 * chart.axises.y.length) + 1;
+            pr = Math.round(r / 260 * chart.axises.y.length) + 1;
+        }else{
+            pl = Math.round(l / 260 * chart.axises.z.length) + 1;
+            pr = Math.round(r / 260 * chart.axises.z.length) + 1;
+        }
+
+        $(info).css('left', (r - l)/2 + l - 45).html('[ ' + pl + ' - ' + pr + ' ]').show();
+    }.bind(this);
+
+    this.handleEnd = function(e){
+        if(e.clientX <= 280 && e.clientX >= 20 && l <= r){
+            $(element).css('left', e.clientX - 25 + 'px');
+        }
+        document.removeEventListener('mousemove', this.handleMove);
+        document.removeEventListener('mouseup', this.handleEnd);
+
+        var axis = $(rItem).attr('id');
+        if(axis == 'rx'){
+            chart.axises.x.min = pl;
+            chart.axises.x.max = pr;
+            chart3d.xAxis[0].setExtremes(pl, pr);
+        }else if(axis == 'ry'){
+            chart.axises.y.min = pl;
+            chart.axises.y.max = pr;
+            chart3d.yAxis[0].setExtremes(pl, pr);
+        }else{
+            chart.axises.z.min = pl;
+            chart.axises.z.max = pr;
+            chart3d.zAxis[0].setExtremes(pl, pr);
+        }
+    }.bind(this);
+
+    element.addEventListener('mousedown', this.handleStart);
+}

@@ -58,7 +58,7 @@ a:hover{
     background-color: #ccc;
     cursor: auto;
 }
-#btnSave,#btnCancel{
+#btnMergeX,#btnMergeY,#btnMergeZ,#btnSave,#btnCancel{
     position: absolute;
     top: 10px;
     right: 10px;
@@ -66,11 +66,18 @@ a:hover{
     color: #fff;
     background-color: #ffcc50;
 }
-#btnSave:hover,#btnCancel:hover{
+#btnMergeX:hover,#btnMergeY:hover,#btnMergeZ:hover,#btnSave:hover,#btnCancel:hover{
     background-color: #fc7408;
 }
-#btnSave{
+#btnMergeX:disabled,#btnMergeY:disabled,#btnMergeZ:disabled{
+    background-color: #ccc;
+    cursor: auto;
+}
+#btnMergeY,#btnSave{
     right: 100px;
+}
+#btnMergeX{
+    right: 190px;
 }
 
 .rItem{
