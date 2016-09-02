@@ -1570,21 +1570,6 @@ var chartHandler = {
  */
 var moveHandler = {
     moveStart: function (x, y, cx, cy) {
-        // check whether the point can be moved
-        switch (dataCase) {
-            case DATA_CASES.DIGITAL_THREE_TEXT_ZERO:
-                // do something...
-                // haven't implemented
-                break;
-            case DATA_CASES.DIGITAL_TWO_TEXT_ONE:
-                // do something...
-                // haven't implemented
-                break;
-            case DATA_CASES.DIGITAL_ONE_TEXT_TW0:
-            case DATA_CASES.DIGITAL_ZERO_TEXT_THREE:
-                break;
-        }
-
         // set the property to be true to let others know I'm moving a point
         chart.movingPoint.isMoving = true;
         chart.movingPoint.point.x = x;
@@ -1620,24 +1605,15 @@ var moveHandler = {
                 y = 100 + cHeight;
             }
 
+            // for some cases, digit value can't change
             switch (dataCase) {
-                case DATA_CASES.DIGITAL_THREE_TEXT_ZERO:
-                    // do something...
-                    // haven't implemented
-                    break;
                 case DATA_CASES.DIGITAL_TWO_TEXT_ONE:
-                    // do something...
-                    // haven't implemented
+                    y = chart.movingPoint.client.y;
                     break;
                 case DATA_CASES.DIGITAL_ONE_TEXT_TW0:
                     if (typeOf2d != TYPE_OF_2D.BASE_Y && typeOf2d != TYPE_OF_2D.BASE_MERGE_Y) {
-                        // digit value can't change
                         y = chart.movingPoint.client.y;
                     }
-                    break;
-                case DATA_CASES.DIGITAL_ZERO_TEXT_THREE:
-                    // do something...
-                    // haven't implemented
                     break;
             }
 
