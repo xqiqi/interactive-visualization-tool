@@ -820,12 +820,18 @@ var chartHandler = {
         // set default operations
         switch (dataCase) {
             case DATA_CASES.DIGITAL_THREE_TEXT_ZERO:
-                // do something...
-                // haven't implemented
+                $('#xpre').prop('disabled', true);
+                $('#xnext').prop('disabled', true);
+                $('#ypre').prop('disabled', true);
+                $('#ynext').prop('disabled', true);
+                $('#zpre').prop('disabled', true);
+                $('#znext').prop('disabled', true);
                 break;
             case DATA_CASES.DIGITAL_TWO_TEXT_ONE:
-                // do something...
-                // haven't implemented
+                $('#ypre').prop('disabled', true);
+                $('#ynext').prop('disabled', true);
+                $('#zpre').prop('disabled', true);
+                $('#znext').prop('disabled', true);
                 break;
             case DATA_CASES.DIGITAL_ONE_TEXT_TW0:
                 $('#ypre').prop('disabled', true);
@@ -833,8 +839,9 @@ var chartHandler = {
                 $('#btnMergeY').prop('disabled', true);
                 break;
             case DATA_CASES.DIGITAL_ZERO_TEXT_THREE:
-                // do something...
-                // haven't implemented
+                $('#btnMergeX').prop('disabled', true);
+                $('#btnMergeY').prop('disabled', true);
+                $('#btnMergeZ').prop('disabled', true);
                 break;
         }
     },
@@ -926,7 +933,9 @@ var chartHandler = {
                             if (!chart.movingPoint.isMoving) {
                                 var s = 'x represents <b>' + chart.axises.z.title + '</b>, y represents <b>' + chart.axises.y.title + '</b><br />';
                                 s += '(x, y) = (' + this.x + ', ' + this.y + ')<br />';
-                                s += '<br /><a href=\"javascript:moveHandler.moveStart(' + this.x + ',' + this.y + ',' + (this.point.plotX + 450) + ',' + (this.point.plotY + 100) + ')\">Change Position?</a>';
+                                if (dataCase == DATA_CASES.DIGITAL_ONE_TEXT_TW0 || dataCase == DATA_CASES.DIGITAL_ZERO_TEXT_THREE) {
+                                    s += '<br /><a href=\"javascript:moveHandler.moveStart(' + this.x + ',' + this.y + ',' + (this.point.plotX + 450) + ',' + (this.point.plotY + 100) + ')\">Change Position?</a>';
+                                }
                                 return s;
                             }
                             return false;
@@ -1019,7 +1028,9 @@ var chartHandler = {
                             if (!chart.movingPoint.isMoving) {
                                 var s = 'x represents <b>' + chart.axises.x.title + '</b>, y represents <b>' + chart.axises.z.title + '</b><br />';
                                 s += '(x, y) = (' + this.x + ', ' + this.y + ')<br />';
-                                s += '<br /><a href=\"javascript:moveHandler.moveStart(' + this.x + ',' + this.y + ',' + (this.point.plotX + 450) + ',' + (this.point.plotY + 100) + ')\">Change Position?</a>';
+                                if (dataCase != DATA_CASES.DIGITAL_THREE_TEXT_ZERO) {
+                                    s += '<br /><a href=\"javascript:moveHandler.moveStart(' + this.x + ',' + this.y + ',' + (this.point.plotX + 450) + ',' + (this.point.plotY + 100) + ')\">Change Position?</a>';
+                                }
                                 return s;
                             }
                             return false;
@@ -1112,7 +1123,9 @@ var chartHandler = {
                             if (!chart.movingPoint.isMoving) {
                                 var s = 'x represents <b>' + chart.axises.x.title + '</b>, y represents <b>' + chart.axises.y.title + '</b><br />';
                                 s += '(x, y) = (' + this.x + ', ' + this.y + ')<br />';
-                                s += '<br /><a href=\"javascript:moveHandler.moveStart(' + this.x + ',' + this.y + ',' + (this.point.plotX + 450) + ',' + (this.point.plotY + 100) + ')\">Change Position?</a>';
+                                if (dataCase != DATA_CASES.DIGITAL_THREE_TEXT_ZERO) {
+                                    s += '<br /><a href=\"javascript:moveHandler.moveStart(' + this.x + ',' + this.y + ',' + (this.point.plotX + 450) + ',' + (this.point.plotY + 100) + ')\">Change Position?</a>';
+                                }
                                 return s;
                             }
                             return false;
@@ -1205,7 +1218,9 @@ var chartHandler = {
                             if (!chart.movingPoint.isMoving) {
                                 var s = 'x represents <b>' + chart.axises.z.title + '</b>, y represents <b>' + chart.axises.y.title + '</b><br />';
                                 s += '(x, y) = (' + this.x + ', ' + this.y + ')<br />';
-                                s += '<br /><a href=\"javascript:moveHandler.moveStart(' + this.x + ',' + this.y + ',' + (this.point.plotX + 450) + ',' + (this.point.plotY + 100) + ')\">Change Position?</a>';
+                                if (dataCase == DATA_CASES.DIGITAL_ONE_TEXT_TW0 || dataCase == DATA_CASES.DIGITAL_ZERO_TEXT_THREE) {
+                                    s += '<br /><a href=\"javascript:moveHandler.moveStart(' + this.x + ',' + this.y + ',' + (this.point.plotX + 450) + ',' + (this.point.plotY + 100) + ')\">Change Position?</a>';
+                                }
                                 return s;
                             }
                             return false;
@@ -1298,7 +1313,9 @@ var chartHandler = {
                             if (!chart.movingPoint.isMoving) {
                                 var s = 'x represents <b>' + chart.axises.x.title + '</b>, y represents <b>' + chart.axises.z.title + '</b><br />';
                                 s += '(x, y) = (' + this.x + ', ' + this.y + ')<br />';
-                                s += '<br /><a href=\"javascript:moveHandler.moveStart(' + this.x + ',' + this.y + ',' + (this.point.plotX + 450) + ',' + (this.point.plotY + 100) + ')\">Change Position?</a>';
+                                if (dataCase != DATA_CASES.DIGITAL_THREE_TEXT_ZERO) {
+                                    s += '<br /><a href=\"javascript:moveHandler.moveStart(' + this.x + ',' + this.y + ',' + (this.point.plotX + 450) + ',' + (this.point.plotY + 100) + ')\">Change Position?</a>';
+                                }
                                 return s;
                             }
                             return false;
@@ -1391,7 +1408,9 @@ var chartHandler = {
                             if (!chart.movingPoint.isMoving) {
                                 var s = 'x represents <b>' + chart.axises.x.title + '</b>, y represents <b>' + chart.axises.y.title + '</b><br />';
                                 s += '(x, y) = (' + this.x + ', ' + this.y + ')<br />';
-                                s += '<br /><a href=\"javascript:moveHandler.moveStart(' + this.x + ',' + this.y + ',' + (this.point.plotX + 450) + ',' + (this.point.plotY + 100) + ')\">Change Position?</a>';
+                                if (dataCase != DATA_CASES.DIGITAL_THREE_TEXT_ZERO) {
+                                    s += '<br /><a href=\"javascript:moveHandler.moveStart(' + this.x + ',' + this.y + ',' + (this.point.plotX + 450) + ',' + (this.point.plotY + 100) + ')\">Change Position?</a>';
+                                }
                                 return s;
                             }
                             return false;
@@ -1487,9 +1506,19 @@ var chartHandler = {
         $('#sortAsc').prop('disabled', true);
         $('#sortDesc').prop('disabled', true);
         // only enabled when merge
-        if (typeOf2d == TYPE_OF_2D.BASE_MERGE_X || typeOf2d == TYPE_OF_2D.BASE_MERGE_Y || typeOf2d == TYPE_OF_2D.BASE_MERGE_Z) {
-            $('#sortAsc').prop('disabled', false);
-            $('#sortDesc').prop('disabled', false);
+        switch (dataCase) {
+            case DATA_CASES.DIGITAL_TWO_TEXT_ONE:
+                if (typeOf2d == TYPE_OF_2D.BASE_MERGE_Y || typeOf2d == TYPE_OF_2D.BASE_MERGE_Z) {
+                    $('#sortAsc').prop('disabled', false);
+                    $('#sortDesc').prop('disabled', false);
+                }
+                break;
+            case DATA_CASES.DIGITAL_ONE_TEXT_TW0:
+                if (typeOf2d == TYPE_OF_2D.BASE_MERGE_X || typeOf2d == TYPE_OF_2D.BASE_MERGE_Z) {
+                    $('#sortAsc').prop('disabled', false);
+                    $('#sortDesc').prop('disabled', false);
+                }
+                break;
         }
     },
     changeTo3d: function (type) {
