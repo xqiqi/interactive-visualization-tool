@@ -102,6 +102,8 @@ var chart = {
  * [get2dData] get data from origin data that 2d scatter needed
  * [update2dData] update data (x1, y1) moves to (x2, y2)
  * [sort] based on the y values to sort x
+ * [save2dChanges] when user click save button to save changes to 3d data
+ * [getNextPosition] when save2dChanges sometimes exists a change dependency and this method will find whether the same old value in following changes
  */
 var dataHandler = {
     init: function () {
@@ -372,6 +374,7 @@ var dataHandler = {
                 // because y can be added, scatter2dData[i][3] represents ytext
                 for (i = 0; i < scatter2dData.length; i++) {
                     scatter2dData[i][3] = scatter2dData[i][1];
+                    scatter2dData[i][5] = scatter2dData[i][1];
                 }
                 break;
             case TYPE_OF_2D.BASE_MERGE_Y:
@@ -404,6 +407,7 @@ var dataHandler = {
 
                 for (i = 0; i < scatter2dData.length; i++) {
                     scatter2dData[i][3] = scatter2dData[i][1];
+                    scatter2dData[i][5] = scatter2dData[i][1];
                 }
                 break;
             case TYPE_OF_2D.BASE_MERGE_Z:
@@ -436,6 +440,7 @@ var dataHandler = {
                 
                 for (i = 0; i < scatter2dData.length; i++) {
                     scatter2dData[i][3] = scatter2dData[i][1];
+                    scatter2dData[i][5] = scatter2dData[i][1];
                 }
                 break;
         }
@@ -477,6 +482,189 @@ var dataHandler = {
         }
     },
     sort: function (type) {
+        var i = 0;
+        var j = 0;
+
+        // sort the scatter2dData but not effective for the chart display
+        for (i = 0; i < scatter2dData.length - 1; i++) {
+            for (j = 0; j < scatter2dData.length; j++) {
+                if(type == 'ASC' ? (scatter2dData[j][1] > scatter2dData[i][1]) : (scatter2dData[j][1] < scatter2dData[i][1])) {
+                    var tmp = scatter2dData[j];
+                    scatter2dData[j] = scatter2dData[i];
+                    scatter2dData[i] = tmp;
+                }
+            }
+        }
+
+        // change the x value of 2d chart to enable the sort
+        // 1. find the minX and maxX
+        var minX = 0;
+        switch (typeOf2d) {
+            case TYPE_OF_2D.BASE_X:
+            case TYPE_OF_2D.BASE_MERGE_X:
+                minX = chart.axises.z.min;
+                break;
+            case TYPE_OF_2D.BASE_Y:
+            case TYPE_OF_2D.BASE_MERGE_Y:
+            case TYPE_OF_2D.BASE_Z:
+            case TYPE_OF_2D.BASE_MERGE_Z:
+                minX = chart.axises.x.min;
+                break;
+        }
+        // 2. update the x value of 2d chart based on the minX and maxX
+        for (i = 0; i < scatter2dData.length; i++) {
+            scatter2dData[i][0] = i + minX;
+        }
+    },
+    save2dChanges: function () {
+        var list = new Array();     // the list for exchange new value and old value
+        var clist = new Array();    // the list that one point is the head of circle
+        var tmp = new Array();
+        var k = 0;  // for tmp
+        var n = 0;  // for clist
+        var i = 0;
+        var j = 0;
+
+        // find x exchange list
+        for (i = 0; i < scatter2dData.length; i++) {
+            if (list.indexOf(i) == -1 && clist.indexOf(i)) {
+                tmp[k] = i;
+                var next = this.getNextPosition(i + 1, scatter2dData[i][0], 'X');
+
+                while (next != -1) {
+                    if (scatter2dData[next][0] == scatter2dData[i][4]) {
+                        clist[n++] = next;
+                        break;
+                    }
+
+                    tmp[++k] = next;
+                    next = this.getNextPosition(i + 1, scatter2dData[next][0], 'X');
+                }
+
+                tmp = tmp.reverse();
+                list = list.concat(tmp);
+                k = 0;
+                tmp = [];
+            }
+        }
+
+        // exchange x values
+        for (i = 0; i < list.length; i++) {
+            var xold = scatter2dData[list[i]][4];
+            var xnew = scatter2dData[list[i]][0];
+
+            for (j = 0; j < chart.count; j++) {
+                // different type, x represents different axis in 3d chart
+                switch (typeOf2d) {
+                    case TYPE_OF_2D.BASE_X:
+                    case TYPE_OF_2D.BASE_MERGE_X:
+                        // 2d x represents 3d z
+                        if (originData[j][2] == xold) {
+                            originData[j][2] = xnew;
+                            scatter3dData[j][2] = xnew;
+                        } else if (originData[j][2] == xnew) {
+                            originData[j][2] = xold;
+                            scatter3dData[j][2] = xold;
+                        }
+                        break;
+                    case TYPE_OF_2D.BASE_Y:
+                    case TYPE_OF_2D.BASE_MERGE_Y:
+                    case TYPE_OF_2D.BASE_Z:
+                    case TYPE_OF_2D.BASE_MERGE_Z:
+                        // 2d x represents 3d x
+                        if (originData[j][0] == xold) {
+                            originData[j][0] = xnew;
+                            scatter3dData[j][0] = xnew;
+                        } else if (originData[j][0] == xnew) {
+                            originData[j][0] = xold;
+                            scatter3dData[j][0] = xold;
+                        }
+                        break;
+                }
+            }
+        }
+
+        // for some cases, we need exchange y values
+        if (dataCase == DATA_CASES.DIGITAL_ZERO_TEXT_THREE || (dataCase == DATA_CASES.DIGITAL_ONE_TEXT_TW0 && typeOf2d == TYPE_OF_2D.BASE_Y)) {
+            list = [];
+            clist = [];
+            tmp = [];
+            k = 0;
+            n = 0;
+
+            // find the y exchange list first
+            for (i = 0; i < scatter2dData.length; i++) {
+                if (list.indexOf(i) == -1 && clist.indexOf(i)) {
+                    tmp[k] = i;
+                    var next = this.getNextPosition(i + 1, scatter2dData[i][1], 'Y');
+
+                    while (next != -1) {
+                        if (scatter2dData[next][1] == scatter2dData[i][5]) {
+                            clist[n++] = next;
+                            break;
+                        }
+
+                        tmp[++k] = next;
+                        next = this.getNextPosition(i + 1, this.scatter2dData[next][1], 'Y');
+                    }
+
+                    tmp = tmp.reverse();
+                    list = list.concat(tmp);
+                    k = 0;
+                    tmp = [];
+                }
+            }
+
+            // exchange y values
+            for (i = 0; i < list.length; i++) {
+                var yold = scatter2dData[list[i]][5];
+                var ynew = scatter2dData[list[i]][1];
+
+                for (j = 0; j < chart.count; j++) {
+                    // different type, y represents different axis in 3d chart
+                    switch (typeOf2d) {
+                        case TYPE_OF_2D.BASE_X:
+                        case TYPE_OF_2D.BASE_MERGE_X:
+                        case TYPE_OF_2D.BASE_Z:
+                        case TYPE_OF_2D.BASE_MERGE_Z:
+                            // 2d y represents 3d y
+                            if (originData[j][1] == yold) {
+                                originData[j][1] = ynew;
+                                scatter3dData[j][1] = ynew;
+                            } else if (originData[j][1] == ynew) {
+                                originData[j][1] = yold;
+                                scatter3dData[j][1] = yold;
+                            }
+                            break;
+                        case TYPE_OF_2D.BASE_Y:
+                        case TYPE_OF_2D.BASE_MERGE_Y:
+                            // 2d y represents 3d z
+                            if (originData[j][2] == yold) {
+                                originData[j][2] = ynew;
+                                scatter3dData[j][2] = ynew;
+                            } else if (originData[j][2] == ynew) {
+                                originData[j][2] = yold;
+                                scatter3dData[j][2] = yold;
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+    },
+    getNextPosition: function (index, value, type) {
+        // type 'X' means we find x old values, scatter2dData[i][4]
+        // type 'Y' means we find y old values, scatter2dData[i][5]
+        for (var i = index; i < scatter2dData.length; i++) {
+            // if the old value (will be replaced in the future) equals the value parma
+            // if equals return the index in scatter2dData array
+            // this kind of dependency will create a list
+            // then when exchange the new value and old value, if there is a list, we will follow the list order
+            if ((scatter2dData[i][4] == value && type == 'X') || (scatter2dData[i][5] == value && type == 'Y')) {
+                return i;
+            }
+        }
+        return -1;
     }
 };
 
@@ -1296,33 +1484,18 @@ var chartHandler = {
         this.init2dChart(type, value);
 
         // set default operations
-        $('#sortAsc').prop('disabled', false);
-        $('#sortDesc').prop('disabled', false);
-        switch (dataCase) {
-            case DATA_CASES.DIGITAL_THREE_TEXT_ZERO:
-                // do something...
-                // haven't implemented
-                break;
-            case DATA_CASES.DIGITAL_TWO_TEXT_ONE:
-                // do something...
-                // haven't implemented
-                break;
-            case DATA_CASES.DIGITAL_ONE_TEXT_TW0:
-                if (typeOf2d == TYPE_OF_2D.BASE_Y || typeOf2d == TYPE_OF_2D.BASE_MERGE_Y) {
-                    $('#sortAsc').prop('disabled', true);
-                    $('#sortDesc').prop('disabled', true);
-                }
-                break;
-            case DATA_CASES.DIGITAL_ZERO_TEXT_THREE:
-                // do something...
-                // haven't implemented
-                break;
+        $('#sortAsc').prop('disabled', true);
+        $('#sortDesc').prop('disabled', true);
+        // only enabled when merge
+        if (typeOf2d == TYPE_OF_2D.BASE_MERGE_X || typeOf2d == TYPE_OF_2D.BASE_MERGE_Y || typeOf2d == TYPE_OF_2D.BASE_MERGE_Z) {
+            $('#sortAsc').prop('disabled', false);
+            $('#sortDesc').prop('disabled', false);
         }
     },
     changeTo3d: function (type) {
         if (type == 'SAVE') {
-            // save
-            // something to do ...
+            dataHandler.save2dChanges();
+            this.update(chart3d, scatter3dData);
         }
 
         // destory 2d chart
@@ -1660,6 +1833,9 @@ $(function(){
 
     // 2d chart btn click
     $('#btnSave').click(function(){
+        if(!confirm("Are you sure to update the original data?")){
+            return;
+        }
         chartHandler.changeTo3d('SAVE');
     });
     $('#btnCancel').click(function(){
