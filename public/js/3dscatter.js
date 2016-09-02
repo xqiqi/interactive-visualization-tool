@@ -1631,13 +1631,10 @@ var moveHandler = {
             var py = Math.floor(e.yAxis[0].value);
 
             switch (dataCase) {
-                case DATA_CASES.DIGITAL_THREE_TEXT_ZERO:
-                    // do something...
-                    // haven't implemented
-                    break;
                 case DATA_CASES.DIGITAL_TWO_TEXT_ONE:
-                    // do something...
-                    // haven't implemented
+                    py = chart.movingPoint.point.y;
+                    px = px < chart.axises.x.min ? chart.axises.x.min : px;
+                    px = px > chart.axises.x.max ? chart.axises.x.max : px;
                     break;
                 case DATA_CASES.DIGITAL_ONE_TEXT_TW0:
                     if (typeOf2d != TYPE_OF_2D.BASE_Y && typeOf2d != TYPE_OF_2D.BASE_MERGE_Y) {
@@ -1658,8 +1655,24 @@ var moveHandler = {
                     }
                     break;
                 case DATA_CASES.DIGITAL_ZERO_TEXT_THREE:
-                    // do something...
-                    // haven't implemented
+                    if (typeOf2d == TYPE_OF_2D.BASE_X || typeOf2d == TYPE_OF_2D.BASE_MERGE_X) {
+                        px = px < chart.axises.z.min ? chart.axises.z.min : px;
+                        px = px > chart.axises.z.max ? chart.axises.z.max : px;
+                        py = py < chart.axises.y.min ? chart.axises.y.min : py;
+                        py = py > chart.axises.y.max ? chart.axises.y.max : py;
+                    }
+                    if (typeOf2d == TYPE_OF_2D.BASE_Y || typeOf2d == TYPE_OF_2D.BASE_MERGE_Y) {
+                        px = px < chart.axises.x.min ? chart.axises.x.min : px;
+                        px = px > chart.axises.x.max ? chart.axises.x.max : px;
+                        py = py < chart.axises.z.min ? chart.axises.z.min : py;
+                        py = py > chart.axises.z.max ? chart.axises.z.max : py;
+                    }
+                    if (typeOf2d == TYPE_OF_2D.BASE_Z || typeOf2d == TYPE_OF_2D.BASE_MERGE_Z) {
+                        px = px < chart.axises.x.min ? chart.axises.x.min : px;
+                        px = px > chart.axises.x.max ? chart.axises.x.max : px;
+                        py = py < chart.axises.y.min ? chart.axises.y.min : py;
+                        py = py > chart.axises.y.max ? chart.axises.y.max : py;
+                    }
                     break;
             }
 
