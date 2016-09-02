@@ -90,7 +90,8 @@ var chart = {
             x: -1,
             y: -1
         }
-    }
+    },
+    maxy: 0
 }
 
 /**
@@ -337,16 +338,105 @@ var dataHandler = {
                 }
                 break;
             case TYPE_OF_2D.BASE_MERGE_X:
-                // do something...
-                // haven't implemented
+                chart.maxy = 0;
+                var k = 0;
+                for (i = 0; i < chart.count; i++) {
+                    var count = 0;
+                    for (j = 0; j < scatter2dData.length; j++) {
+                        // find if originData[i] in scatter2dData
+                        // if exists, add the y value
+                        if (originData[i][2] == scatter2dData[j][0]) {
+                            scatter2dData[j][1] += originData[i][1];
+                            count++;
+                        }
+
+                        if (scatter2dData[j][1] > chart.maxy) {
+                            chart.maxy = scatter2dData[j][1];
+                        }
+                    }
+
+                    // if not exists, new a array to store originData[i]
+                    if (count == 0) {
+                        scatter2dData[k] = new Array();
+                        scatter2dData[k][0] = originData[i][2];
+                        scatter2dData[k][1] = originData[i][1];
+                        scatter2dData[k][2] = originData[i][5];
+                        scatter2dData[k][3] = originData[i][4];
+                        scatter2dData[k][4] = originData[i][2];
+                        scatter2dData[k][5] = originData[i][1];
+                        k++;
+                    }
+                }
+
+                // scatter2dData[i][3] = scatter2dData[i][1]
+                // because y can be added, scatter2dData[i][3] represents ytext
+                for (i = 0; i < scatter2dData.length; i++) {
+                    scatter2dData[i][3] = scatter2dData[i][1];
+                }
                 break;
             case TYPE_OF_2D.BASE_MERGE_Y:
-                // do something...
-                // haven't implemented
+                chart.maxy = 0;
+                var k = 0;
+                for (i = 0; i < chart.count; i++) {
+                    var count = 0;
+                    for (j = 0; j < scatter2dData.length; j++) {
+                        if (originData[i][0] == scatter2dData[j][0]) {
+                            scatter2dData[j][1] += originData[i][2];
+                            count++;
+                        }
+
+                        if (scatter2dData[j][1] > chart.maxy) {
+                            chart.maxy = scatter2dData[j][1];
+                        }
+                    }
+
+                    if (count == 0) {
+                        scatter2dData[k] = new Array();
+                        scatter2dData[k][0] = originData[i][0];
+                        scatter2dData[k][1] = originData[i][2];
+                        scatter2dData[k][2] = originData[i][3];
+                        scatter2dData[k][3] = originData[i][5];
+                        scatter2dData[k][4] = originData[i][0];
+                        scatter2dData[k][5] = originData[i][2];
+                        k++;
+                    }
+                }
+
+                for (i = 0; i < scatter2dData.length; i++) {
+                    scatter2dData[i][3] = scatter2dData[i][1];
+                }
                 break;
             case TYPE_OF_2D.BASE_MERGE_Z:
-                // do something...
-                // haven't implemented
+                chart.maxy = 0;
+                var k = 0;
+                for (i = 0; i < chart.count; i++) {
+                    var count = 0;
+                    for (j = 0; j < scatter2dData.length; j++) {
+                        if (originData[i][0] == scatter2dData[j][0]) {
+                            scatter2dData[j][1] += originData[i][1];
+                            count++;
+                        }
+
+                        if (scatter2dData[j][1] > chart.maxy) {
+                            chart.maxy = scatter2dData[j][1];
+                        }
+                    }
+
+                    if (count == 0) {
+                        scatter2dData[k] = new Array();
+                        scatter2dData[k][0] = originData[i][0];
+                        scatter2dData[k][1] = originData[i][1];
+                        scatter2dData[k][2] = originData[i][3];
+                        scatter2dData[k][3] = originData[i][4];
+                        scatter2dData[k][4] = originData[i][0];
+                        scatter2dData[k][5] = originData[i][1];
+                        k++;
+                    }
+                }
+                
+                for (i = 0; i < scatter2dData.length; i++) {
+                    scatter2dData[i][3] = scatter2dData[i][1];
+                }
                 break;
         }
     },
@@ -847,16 +937,283 @@ var chartHandler = {
                 });
                 break;
             case TYPE_OF_2D.BASE_MERGE_X:
-                // do something...
-                // haven't implemented
+                chart2d = new Highcharts.Chart({
+                    chart: {
+                        margin: [100,150,100,150],
+                        renderTo: 'chart2d',
+                        type: 'scatter',
+                        events: {
+                            click: moveHandler.moveEnd
+                        }
+                    },
+                    title: {
+                        text: '2D Demonstration'
+                    },
+                    subtitle: {
+                        text: 'Merge X : Sum(Y)'
+                    },
+                    plotOptions: {
+                        series: {
+                            point: {
+                                events: {
+                                    click: function(){
+                                        chartHandler.select2d(this.x, this.y);
+                                    }
+                                }
+                            }
+                        },
+                        scatter: {
+                            marker: {
+                                symbol: 'circle',
+                                states: {
+                                    hover: {
+                                        fillColor: '#00a190'
+                                    }
+                                }
+                            },
+                            zones: [{
+                                value: chart.zone/6,
+                                color: '#ffff00'
+                            }, {
+                                value: chart.zone*2/6,
+                                color: '#ffcc00'
+                            },{
+                                value: chart.zone*3/6,
+                                color: '#ff9900'
+                            },{
+                                value: chart.zone*4/6,
+                                color: '#ff6600'
+                            },{
+                                value: chart.zone*5/6,
+                                color: '#ff3300'
+                            },{
+                                color: '#ff0000'
+                            }]
+                        }
+                    },
+                    xAxis: {
+                        min: chart.axises.z.min,
+                        max: chart.axises.z.max,
+                        title: {
+                            text: chart.axises.z.title,
+                        }
+                    },
+                    yAxis: {
+                        min: chart.axises.y.min,
+                        max: chart.maxy,
+                        title: {
+                            text: chart.axises.y.title,
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    tooltip: {
+                        useHTML: true,
+                        formatter: function(){
+                            if (!chart.movingPoint.isMoving) {
+                                var s = 'x represents <b>' + chart.axises.z.title + '</b>, y represents <b>' + chart.axises.y.title + '</b><br />';
+                                s += '(x, y) = (' + this.x + ', ' + this.y + ')<br />';
+                                s += '<br /><a href=\"javascript:moveHandler.moveStart(' + this.x + ',' + this.y + ',' + (this.point.plotX + 450) + ',' + (this.point.plotY + 100) + ')\">Change Position?</a>';
+                                return s;
+                            }
+                            return false;
+                        }
+                    },
+                    series: [{
+                        data: scatter2dData,
+                        turboThreshold: chart.count + 1
+                    }]
+                });
                 break;
             case TYPE_OF_2D.BASE_MERGE_Y:
-                // do something...
-                // haven't implemented
+                chart2d = new Highcharts.Chart({
+                    chart: {
+                        margin: [100,150,100,150],
+                        renderTo: 'chart2d',
+                        type: 'scatter',
+                        events: {
+                            click: moveHandler.moveEnd
+                        }
+                    },
+                    title: {
+                        text: '2D Demonstration'
+                    },
+                    subtitle: {
+                        text: 'Merge Y : Sum(Z)'
+                    },
+                    plotOptions: {
+                        series: {
+                            point: {
+                                events: {
+                                    click: function(){
+                                        chartHandler.select2d(this.x, this.y);
+                                    }
+                                }
+                            }
+                        },
+                        scatter: {
+                            marker: {
+                                symbol: 'circle',
+                                states: {
+                                    hover: {
+                                        fillColor: '#00a190'
+                                    }
+                                }
+                            },
+                            zones: [{
+                                value: chart.zone/6,
+                                color: '#ffff00'
+                            }, {
+                                value: chart.zone*2/6,
+                                color: '#ffcc00'
+                            },{
+                                value: chart.zone*3/6,
+                                color: '#ff9900'
+                            },{
+                                value: chart.zone*4/6,
+                                color: '#ff6600'
+                            },{
+                                value: chart.zone*5/6,
+                                color: '#ff3300'
+                            },{
+                                color: '#ff0000'
+                            }]
+                        }
+                    },
+                    xAxis: {
+                        min: chart.axises.x.min,
+                        max: chart.axises.x.max,
+                        title: {
+                            text: chart.axises.x.title,
+                        }
+                    },
+                    yAxis: {
+                        min: chart.axises.z.min,
+                        max: chart.maxy,
+                        title: {
+                            text: chart.axises.z.title,
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    tooltip: {
+                        useHTML: true,
+                        formatter: function(){
+                            if (!chart.movingPoint.isMoving) {
+                                var s = 'x represents <b>' + chart.axises.x.title + '</b>, y represents <b>' + chart.axises.z.title + '</b><br />';
+                                s += '(x, y) = (' + this.x + ', ' + this.y + ')<br />';
+                                s += '<br /><a href=\"javascript:moveHandler.moveStart(' + this.x + ',' + this.y + ',' + (this.point.plotX + 450) + ',' + (this.point.plotY + 100) + ')\">Change Position?</a>';
+                                return s;
+                            }
+                            return false;
+                        }
+                    },
+                    series: [{
+                        data: scatter2dData,
+                        turboThreshold: chart.count + 1
+                    }]
+                });
                 break;
             case TYPE_OF_2D.BASE_MERGE_Z:
-                // do something...
-                // haven't implemented
+                chart2d = new Highcharts.Chart({
+                    chart: {
+                        margin: [100,150,100,150],
+                        renderTo: 'chart2d',
+                        type: 'scatter',
+                        events: {
+                            click: moveHandler.moveEnd
+                        }
+                    },
+                    title: {
+                        text: '2D Demonstration'
+                    },
+                    subtitle: {
+                        text: 'Merge Z : Sum(Y)'
+                    },
+                    plotOptions: {
+                        series: {
+                            point: {
+                                events: {
+                                    click: function(){
+                                        chartHandler.select2d(this.x, this.y);
+                                    }
+                                }
+                            }
+                        },
+                        scatter: {
+                            marker: {
+                                symbol: 'circle',
+                                states: {
+                                    hover: {
+                                        fillColor: '#00a190'
+                                    }
+                                }
+                            },
+                            zones: [{
+                                value: chart.zone/6,
+                                color: '#ffff00'
+                            }, {
+                                value: chart.zone*2/6,
+                                color: '#ffcc00'
+                            },{
+                                value: chart.zone*3/6,
+                                color: '#ff9900'
+                            },{
+                                value: chart.zone*4/6,
+                                color: '#ff6600'
+                            },{
+                                value: chart.zone*5/6,
+                                color: '#ff3300'
+                            },{
+                                color: '#ff0000'
+                            }]
+                        }
+                    },
+                    xAxis: {
+                        min: chart.axises.x.min,
+                        max: chart.axises.x.max,
+                        title: {
+                            text: chart.axises.x.title,
+                        }
+                    },
+                    yAxis: {
+                        min: chart.axises.y.min,
+                        max: chart.maxy,
+                        title: {
+                            text: chart.axises.y.title,
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    tooltip: {
+                        useHTML: true,
+                        formatter: function(){
+                            if (!chart.movingPoint.isMoving) {
+                                var s = 'x represents <b>' + chart.axises.x.title + '</b>, y represents <b>' + chart.axises.y.title + '</b><br />';
+                                s += '(x, y) = (' + this.x + ', ' + this.y + ')<br />';
+                                s += '<br /><a href=\"javascript:moveHandler.moveStart(' + this.x + ',' + this.y + ',' + (this.point.plotX + 450) + ',' + (this.point.plotY + 100) + ')\">Change Position?</a>';
+                                return s;
+                            }
+                            return false;
+                        }
+                    },
+                    series: [{
+                        data: scatter2dData,
+                        turboThreshold: chart.count + 1
+                    }]
+                });
                 break;
         }
     },
@@ -973,6 +1330,7 @@ var chartHandler = {
         chart2d = null;
         scatter2dData = [];
         typeOf2d = 0;
+        chart.maxy = 0;
         chart.movingPoint.isMoving = false;
         chart.movingPoint.point.x = -1;
         chart.movingPoint.point.y = -1;
@@ -1291,13 +1649,13 @@ $(function(){
         chartHandler.select3d(p.x, p.y, p.z + 1);
     });
     $('#btnMergeX').click(function(){
-
+        chartHandler.changeTo2d(TYPE_OF_2D.BASE_MERGE_X);
     });
     $('#btnMergeY').click(function(){
-
+        chartHandler.changeTo2d(TYPE_OF_2D.BASE_MERGE_Y);
     });
     $('#btnMergeZ').click(function(){
-
+        chartHandler.changeTo2d(TYPE_OF_2D.BASE_MERGE_Z);
     });
 
     // 2d chart btn click
