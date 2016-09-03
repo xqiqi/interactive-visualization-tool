@@ -1,7 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>123</title>
+    <meta charset="utf-8">
+    <meta name="viwport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started! - Interact With Your Data Now</title>
+    <link rel="stylesheet" href="css/index.css" />
 </head>
-<body>456</body>
+<body>
+<div id="divUpload" class="main" style="display:none;">
+    <h1>Get Started Now!</h1>
+    <button id="btnUpload">Upload A File</button>
+    <p>* Supported Document Type: .txt, .csv with "," as the separator</p>
+</div>
+
+<div id="divFile" class="main">
+    <p>
+        Type the name and choose the data type of each column.
+    </p>
+    <p>
+        <span><b>COL1 :</b></span><input id="col1name" type="text" placeholder="The name of col1 ..." class="colname" /><select id="col1type" class="coltype">
+            <option value="1">text</option>
+            <option value="2">digit</option>
+        </select><button class="op none">-</button><button class="op none">+</button>
+    </p>
+    <p>
+        <span><b>COL2 :</b></span><input id="col2name" type="text" placeholder="The name of col2 ..." class="colname" /><select id="col2type" class="coltype">
+            <option value="1">text</option>
+            <option value="2">digit</option>
+        </select><button class="op none">-</button><button class="op none">+</button>
+    </p>
+    <p>
+        <span><b>COL3 :</b></span><input id="col3name" type="text" placeholder="The name of col3 ..." class="colname" /><select id="col3type" class="coltype">
+            <option value="1">text</option>
+            <option value="2">digit</option>
+        </select><button class="op del">-</button><button class="op add">+</button>
+    </p>
+    <p>
+        <label>
+            <input id="firstRowCheck" type="checkbox">
+            Ignore the first row of the file (if the file has a header row)
+        </label>
+    </p>
+    
+    <button id="btnStart">Start Interaction Now</button>
+</div>
+
+<div id="loading" class="main" style="display:none;">
+    <table class="circle" cellspacing="0" cellpadding="0">
+        <tr class="y_r">
+            <td class="x_r"></td>
+            <td class="x_d1"></td>
+            <td class="x_r"></td>
+            <td class="x_d2"></td>
+            <td class="x_r"><div id="c1" class="c"></div></td>
+            <td class="x_d2"></td>
+            <td class="x_r"></td>
+            <td class="x_d1"></td>
+            <td class="x_r"></td>
+        </tr>
+        <tr class="y_d1"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr class="y_r"><td></td><td></td><td><div id="c8" class="c"></div></td><td></td><td></td><td></td><td><div id="c2" class="c"></div></td><td></td><td></td></tr>
+        <tr class="y_d2"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr class="y_r"><td><div id="c7" class="c"></div></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><div id="c3" class="c"></div></td></tr>
+        <tr class="y_d2"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr class="y_r"><td></td><td></td><td><div id="c6" class="c"></div></td><td></td><td></td><td></td><td><div id="c4" class="c"></div></td><td></td><td></td></tr>
+        <tr class="y_d1"><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        <tr class="y_r"><td></td><td></td><td></td><td></td><td><div id="c5" class="c"></div></td><td></td><td></td><td></td><td></td></tr>
+    </table>
+</div>
+
+<form id="fileUpload" name="fileUpload" method="post" action="/upload" target="frameFile" enctype="multipart/form-data">
+    <input id="btnFileUpload" type="file" name="btnFileUpload" style="display:none" accept=".txt,.csv" />
+    <iframe id='frameFile' name='frameFile' style="display:none"></iframe>
+</form>
+
+<script src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
+<script src="js/index.js"></script>
+</body>
 </html>
