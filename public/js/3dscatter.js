@@ -114,7 +114,8 @@ var dataHandler = {
         // get data from localStorage
         if (window.localStorage) {
             data = JSON.parse(localStorage.getItem('VS_DATA') ? localStorage.getItem('VS_DATA') : '');
-            //var colNames = localStorage.getItem('vs_colNames').split(',');
+            //var colNames = localStorage.getItem('VS_COL_NAMES').split(',');
+            //dataCase = parseInt(localStorage.getItem('VS_DATA_CASE'));
             colNames = ['subject', 'count', 'word'];
             dataCase = DATA_CASES.DIGITAL_ONE_TEXT_TW0;
         } else {
@@ -706,7 +707,7 @@ var chartHandler = {
                 series: {
                     point: {
                         events: {
-                            click: function(){
+                            click: function () {
                                 chartHandler.select3d(this.x, this.y, this.z);
                             }
                         }
@@ -770,7 +771,7 @@ var chartHandler = {
             },
             tooltip: {
                 useHTML: true,
-                formatter: function(){
+                formatter: function () {
                     var p = this.point;
                     var s = '(' + p.x + ', ' + p.y + ', ' + p.z + ')<br />';
                     s += '<br /><a href=\"javascript:chartHandler.changeTo2d(' + TYPE_OF_2D.BASE_X + ', ' + p.x + ')\">To 2D Section : x = ' + p.x + '</a>';
@@ -872,7 +873,7 @@ var chartHandler = {
                         series: {
                             point: {
                                 events: {
-                                    click: function(){
+                                    click: function () {
                                         chartHandler.select2d(this.x, this.y);
                                     }
                                 }
@@ -929,7 +930,7 @@ var chartHandler = {
                     },
                     tooltip: {
                         useHTML: true,
-                        formatter: function(){
+                        formatter: function () {
                             if (!chart.movingPoint.isMoving) {
                                 var s = 'x represents <b>' + chart.axises.z.title + '</b>, y represents <b>' + chart.axises.y.title + '</b><br />';
                                 s += '(x, y) = (' + this.x + ', ' + this.y + ')<br />';
@@ -967,7 +968,7 @@ var chartHandler = {
                         series: {
                             point: {
                                 events: {
-                                    click: function(){
+                                    click: function () {
                                         chartHandler.select2d(this.x, this.y);
                                     }
                                 }
@@ -1024,7 +1025,7 @@ var chartHandler = {
                     },
                     tooltip: {
                         useHTML: true,
-                        formatter: function(){
+                        formatter: function () {
                             if (!chart.movingPoint.isMoving) {
                                 var s = 'x represents <b>' + chart.axises.x.title + '</b>, y represents <b>' + chart.axises.z.title + '</b><br />';
                                 s += '(x, y) = (' + this.x + ', ' + this.y + ')<br />';
@@ -1062,7 +1063,7 @@ var chartHandler = {
                         series: {
                             point: {
                                 events: {
-                                    click: function(){
+                                    click: function () {
                                         chartHandler.select2d(this.x, this.y);
                                     }
                                 }
@@ -1119,7 +1120,7 @@ var chartHandler = {
                     },
                     tooltip: {
                         useHTML: true,
-                        formatter: function(){
+                        formatter: function () {
                             if (!chart.movingPoint.isMoving) {
                                 var s = 'x represents <b>' + chart.axises.x.title + '</b>, y represents <b>' + chart.axises.y.title + '</b><br />';
                                 s += '(x, y) = (' + this.x + ', ' + this.y + ')<br />';
@@ -1157,7 +1158,7 @@ var chartHandler = {
                         series: {
                             point: {
                                 events: {
-                                    click: function(){
+                                    click: function () {
                                         chartHandler.select2d(this.x, this.y);
                                     }
                                 }
@@ -1214,7 +1215,7 @@ var chartHandler = {
                     },
                     tooltip: {
                         useHTML: true,
-                        formatter: function(){
+                        formatter: function () {
                             if (!chart.movingPoint.isMoving) {
                                 var s = 'x represents <b>' + chart.axises.z.title + '</b>, y represents <b>' + chart.axises.y.title + '</b><br />';
                                 s += '(x, y) = (' + this.x + ', ' + this.y + ')<br />';
@@ -1252,7 +1253,7 @@ var chartHandler = {
                         series: {
                             point: {
                                 events: {
-                                    click: function(){
+                                    click: function () {
                                         chartHandler.select2d(this.x, this.y);
                                     }
                                 }
@@ -1309,7 +1310,7 @@ var chartHandler = {
                     },
                     tooltip: {
                         useHTML: true,
-                        formatter: function(){
+                        formatter: function () {
                             if (!chart.movingPoint.isMoving) {
                                 var s = 'x represents <b>' + chart.axises.x.title + '</b>, y represents <b>' + chart.axises.z.title + '</b><br />';
                                 s += '(x, y) = (' + this.x + ', ' + this.y + ')<br />';
@@ -1347,7 +1348,7 @@ var chartHandler = {
                         series: {
                             point: {
                                 events: {
-                                    click: function(){
+                                    click: function () {
                                         chartHandler.select2d(this.x, this.y);
                                     }
                                 }
@@ -1404,7 +1405,7 @@ var chartHandler = {
                     },
                     tooltip: {
                         useHTML: true,
-                        formatter: function(){
+                        formatter: function () {
                             if (!chart.movingPoint.isMoving) {
                                 var s = 'x represents <b>' + chart.axises.x.title + '</b>, y represents <b>' + chart.axises.y.title + '</b><br />';
                                 s += '(x, y) = (' + this.x + ', ' + this.y + ')<br />';
@@ -1712,7 +1713,7 @@ var moveHandler = {
     }
 }
 
-$(function(){
+$(function () {
     // init all the data we need
     dataHandler.init();
 
@@ -1725,7 +1726,7 @@ $(function(){
     for(var i = 0; i < rDots.length; i++) {
         new Dot(rDots[i]);
     }
-    $('.rItem').hover(function(){
+    $('.rItem').hover(function () {
         var l = parseInt($(this).children('.dMin').css('left').replace(/[a-z][A-Z]/ig, '')) + 5,
             r = parseInt($(this).children('.dMax').css('left').replace(/[a-z][A-Z]/ig, '')) + 5,
             pl = 0,
@@ -1744,12 +1745,12 @@ $(function(){
         }
 
         $(this).children('.float').css('left', (r - l)/2 + l - 45).html('[ ' + pl + ' - ' + pr + ' ]').show();
-    },function(){
+    },function () {
         $(this).children('.float').hide();
     });
 
     // 3d chart btn click
-    $('#xpre').click(function(){
+    $('#xpre').click(function () {
         var p = chart.selectedPoint;
         if (p.x == -1 && p.y == -1 && p.z == -1) {
             alert("Nothing Selected!");
@@ -1764,7 +1765,7 @@ $(function(){
         chartHandler.update(chart3d, scatter3dData);
         chartHandler.select3d(p.x - 1, p.y, p.z);
     });
-    $('#xnext').click(function(){
+    $('#xnext').click(function () {
         var p = chart.selectedPoint;
         if (p.x == -1 && p.y == -1 && p.z == -1) {
             alert("Nothing Selected!");
@@ -1779,7 +1780,7 @@ $(function(){
         chartHandler.update(chart3d, scatter3dData);
         chartHandler.select3d(p.x + 1, p.y, p.z);
     });
-    $('#ypre').click(function(){
+    $('#ypre').click(function () {
         var p = chart.selectedPoint;
         if (p.x == -1 && p.y == -1 && p.z == -1) {
             alert("Nothing Selected!");
@@ -1794,7 +1795,7 @@ $(function(){
         chartHandler.update(chart3d, scatter3dData);
         chartHandler.select3d(p.x, p.y - 1, p.z);
     });
-    $('#ynext').click(function(){
+    $('#ynext').click(function () {
         var p = chart.selectedPoint;
         if (p.x == -1 && p.y == -1 && p.z == -1) {
             alert("Nothing Selected!");
@@ -1809,7 +1810,7 @@ $(function(){
         chartHandler.update(chart3d, scatter3dData);
         chartHandler.select3d(p.x, p.y + 1, p.z);
     });
-    $('#zpre').click(function(){
+    $('#zpre').click(function () {
         var p = chart.selectedPoint;
         if (p.x == -1 && p.y == -1 && p.z == -1) {
             alert("Nothing Selected!");
@@ -1824,7 +1825,7 @@ $(function(){
         chartHandler.update(chart3d, scatter3dData);
         chartHandler.select3d(p.x, p.y, p.z - 1);
     });
-    $('#znext').click(function(){
+    $('#znext').click(function () {
         var p = chart.selectedPoint;
         if (p.x == -1 && p.y == -1 && p.z == -1) {
             alert("Nothing Selected!");
@@ -1839,31 +1840,31 @@ $(function(){
         chartHandler.update(chart3d, scatter3dData);
         chartHandler.select3d(p.x, p.y, p.z + 1);
     });
-    $('#btnMergeX').click(function(){
+    $('#btnMergeX').click(function () {
         chartHandler.changeTo2d(TYPE_OF_2D.BASE_MERGE_X);
     });
-    $('#btnMergeY').click(function(){
+    $('#btnMergeY').click(function () {
         chartHandler.changeTo2d(TYPE_OF_2D.BASE_MERGE_Y);
     });
-    $('#btnMergeZ').click(function(){
+    $('#btnMergeZ').click(function () {
         chartHandler.changeTo2d(TYPE_OF_2D.BASE_MERGE_Z);
     });
 
     // 2d chart btn click
-    $('#btnSave').click(function(){
+    $('#btnSave').click(function () {
         if(!confirm("Are you sure to update the original data?")){
             return;
         }
         chartHandler.changeTo3d('SAVE');
     });
-    $('#btnCancel').click(function(){
+    $('#btnCancel').click(function () {
         chartHandler.changeTo3d('CANCEL');
     });
-    $('#sortAsc').click(function(){
+    $('#sortAsc').click(function () {
         dataHandler.sort('ASC');
         chartHandler.update(chart2d, scatter2dData);
     });
-    $('#sortDesc').click(function(){
+    $('#sortDesc').click(function () {
         dataHandler.sort('DESC');
         chartHandler.update(chart2d, scatter2dData);
     });
@@ -1879,12 +1880,12 @@ function Dot(element){
     var l = 0, r = 0;
     var pl = 0, pr = 0;
 
-    this.handleStart = function(e){
+    this.handleStart = function (e) {
         document.addEventListener('mousemove', this.handleMove);
         document.addEventListener('mouseup', this.handleEnd);
     }.bind(this);
 
-    this.handleMove = function(e){
+    this.handleMove = function (e) {
         if(e.clientX <= 280 && e.clientX >= 20 && l <= r){
             $(element).css('left', e.clientX - 25 + 'px');
         }
@@ -1907,7 +1908,7 @@ function Dot(element){
         $(info).css('left', (r - l)/2 + l - 45).html('[ ' + pl + ' - ' + pr + ' ]').show();
     }.bind(this);
 
-    this.handleEnd = function(e){
+    this.handleEnd = function (e) {
         if(e.clientX <= 280 && e.clientX >= 20 && l <= r){
             $(element).css('left', e.clientX - 25 + 'px');
         }
