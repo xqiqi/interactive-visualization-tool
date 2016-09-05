@@ -114,10 +114,8 @@ var dataHandler = {
         // get data from localStorage
         if (window.localStorage) {
             data = JSON.parse(localStorage.getItem('VS_DATA') ? localStorage.getItem('VS_DATA') : '');
-            //var colNames = localStorage.getItem('VS_COL_NAMES').split(',');
-            //dataCase = parseInt(localStorage.getItem('VS_DATA_CASE'));
-            colNames = ['subject', 'count', 'word'];
-            dataCase = DATA_CASES.DIGITAL_ONE_TEXT_TW0;
+            colNames = localStorage.getItem('VS_COL_NAMES').split(',');
+            dataCase = parseInt(localStorage.getItem('VS_DATA_CASE'));
         } else {
             alert('LocalStorage is not supported.');
             return;

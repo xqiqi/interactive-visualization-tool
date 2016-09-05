@@ -2,11 +2,11 @@
  ***** the file that user uploads *****
  */
 var file = {
-    path: '',
+    path: 'uploads/fe2d32e04d31f8834936272841dfc4e9',
     dim: 3,
     hasHeader: false,
-    colNames: [],
-    colTypes: [],
+    colNames: ['subject', 'word', 'count'],
+    colTypes: [1, 1, 2],
     dataCase: 0
 }
 
@@ -50,19 +50,20 @@ $(function () {
         $('#loading').fadeIn();
         
         // get columns' properties
-        for (var i = 0; i < d; i++) {
+        /*for (var i = 0; i < file.dim; i++) {
             file.colNames[i] = $('#col' + (i + 1) + 'name').val();
             file.colTypes[i] = parseInt($('#col' + (i + 1) + 'type').val());
         }
 
         // does the file has header
-        file.hasHeader = $('#firstRowCheck').is(':checked');
+        file.hasHeader = $('#firstRowCheck').is(':checked');*/
         
         // define the data case
         switch (file.dim) {
             case 2:
                 break;
             case 3:
+                var colTypes = file.colTypes;
                 if (colTypes[0] == 2 && colTypes[1] == 2 && colTypes[2] == 2) {
                     file.dataCase = 0;
                 }
@@ -91,11 +92,8 @@ $(function () {
             data: file
         })
         .then(function (res) {
-            // get res
-            // ...
-
             if (window.localStorage) {
-                localStorage.setItem("VS_DATA", str);
+                localStorage.setItem("VS_DATA", res);
                 localStorage.setItem("VS_COL_NAMES", file.colNames.toString());
                 localStorage.setItem("VS_DATA_CASE", file.dataCase);
             } else {
@@ -115,7 +113,7 @@ $(function () {
                     break;
             }
         })
-        .error(function () {
+        .fail(function (e) {
             alert('Data Process Failed.');
             $('#loading').hide();
             $('#divFile').fadeIn();
