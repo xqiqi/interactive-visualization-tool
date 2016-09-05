@@ -1,5 +1,8 @@
+'use strict'
+
 const multer  = require('multer');
 const upload = multer({ dest: 'uploads/' });
+const data = require('./data');
 
 module.exports = (app) => {
     app.get('/', (req, res) => {
@@ -11,4 +14,7 @@ module.exports = (app) => {
         console.log('The file was uploaded successfully in ' + req.file.path);
         res.send('<script>window.parent.uploadResult(\"' + req.file.path + '\");</script>');
     });
+
+    // when first load the data
+    app.post('/data/init', data.init);
 };
