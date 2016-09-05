@@ -1866,6 +1866,58 @@ $(function () {
         dataHandler.sort('DESC');
         chartHandler.update(chart2d, scatter2dData);
     });
+
+    // cluster
+    $('#goCluster').click(function () {
+        var k = $('#kmeansInput').val() ? $('#kmeansInput').val() : 0;
+        if (k < 1 || parseInt(k) == NaN) {
+            alert('Invalid k value!');
+            return;
+        }
+
+        var cks = $('#kmeansCheck').find('input[type=checkbox]');
+        var arr = [false, false, false];
+        for (var i = 0; i < cks.length; i++) {
+            if (cks.eq(i).is(':Checked')) {
+                arr[i] = true;
+            }
+        }
+
+        // store originData to a tmp file and let R to call the tmp file
+        $.ajax({
+            type: 'post',
+            url: '/createFile',
+            dataType: 'json',
+            data: {
+                data: JSON.stringify(originData)
+            }
+        })
+        .done(function () {
+            $.ajax({
+                type: 'post',
+                url: '/data/cluster',
+                dataType: 'json',
+                data: {
+                    k: k,
+                    ignored: arr,
+                    dim: 3
+                }
+            })
+            .then(function (res) {
+                if (window.localStorage) {
+                    localStorage.setItem("VS_DATA_K", res);
+                    localStorage.setItem("VS_K", k);
+                } else {
+                    alert("LocalStorage is not supported.");
+                }
+
+                window.location.href = '3dcluster.html';
+            })
+            .fail(function () {
+                alert('Data Cluster Failed.');
+            })
+        });
+    });
 });
 
 

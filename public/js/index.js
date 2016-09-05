@@ -113,7 +113,7 @@ $(function () {
                     break;
             }
         })
-        .fail(function (e) {
+        .fail(function () {
             alert('Data Process Failed.');
             $('#loading').hide();
             $('#divFile').fadeIn();
