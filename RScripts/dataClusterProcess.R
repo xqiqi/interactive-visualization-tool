@@ -12,6 +12,13 @@ getCluster <- function (o) {
 
     if (dim == 2) {
         data <- d[1:2]
+
+        if (ignored[1] == TRUE) {
+            data <- subset(data, select=-V1)
+        }
+        if (ignored[2] == TRUE) {
+            data <- subset(data, select=-V2)
+        }
     } else if (dim ==3) {
         data <- d[1:3]
 
