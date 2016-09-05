@@ -46,7 +46,6 @@ exports.init = (req, res) => {
     // pass config to rio to do R process
     rio.$e(config)
     .then((val) => {
-        console.log(val);
         return res.json(val);
     })
     .catch((err) => {
@@ -81,7 +80,6 @@ exports.cluster = (req, res) => {
     // pass config to rio to do R process
     rio.$e(config)
     .then((val) => {
-        console.log(val);
         return res.json(val);
     })
     .catch((err) => {
