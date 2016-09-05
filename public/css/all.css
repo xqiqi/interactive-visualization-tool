@@ -160,3 +160,33 @@ a:hover{
     border: 1px solid #333;
     border-radius: 2px;
 }
+
+/* for cluster css */
+#clusterContent{
+    width: 100%;
+    height: 700px;
+}
+#clusterInfo{
+    width: 100%;
+    min-height: 300px;
+    background-color: #00a190;
+    color: #fff;
+}
+.clusters{
+    margin: 0 25px;
+}
+.clusters span{
+    display: inline-block;
+    padding: 0 10px;
+    line-height: 22px;
+    background-color: #ffcc50;
+    border-radius: 5px;
+    margin: 10px 5px 0 0;
+    cursor: pointer;
+}
+.clusters span:hover,.clusters .active{
+    background-color: #fc7408;
+}
+.all{
+    margin: 10px 25px 0 25px;
+}
