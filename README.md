@@ -6,8 +6,9 @@ Project Dependencies:
 * R & Rserve
 
 Before you start the server, you need start Rserve in advance.
-Run in shell:
-```
+
+Run in R:
+```R
 library(Rserve)
 Rserve(args="--no-save")
 ```
