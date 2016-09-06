@@ -1,9 +1,16 @@
-var originData = [];
+/** 
+ ***** Definition *****
+ *
+ * [seriesData] when drawing the chart, the data it needs, it contains the series name and digit data of the chart
+ * [chart3d] the highcharts object to draw a 3d chart
+ * [cluster] contains all the properties of the cluster, including the amount of clusters and cluster series
+ * [chart] defines all the properties of the chart
+ */
 var seriesData = [];
 var chart3d = null;
 var cluster = {
     k: 0,
-    kcount: []
+    series: []
 }
 var chart = {
     count: 0,
@@ -26,6 +33,11 @@ var chart = {
     }
 }
 
+/**
+ ***** Define All The Methods Related To Data Handling
+ *
+ * [init] parpare data
+ */
 var dataHandler = {
     init: function () {
         var data = null;
@@ -34,19 +46,25 @@ var dataHandler = {
 
         if (window.localStorage) {
             data = JSON.parse(localStorage.getItem('VS_DATA_K') ? localStorage.getItem('VS_DATA_K') : '');
-            cluster.k = parseInt(localStorage.getItem('VS_K'));
             colNames = localStorage.getItem('VS_COL_NAMES').split(',');
+            cluster.k = parseInt(localStorage.getItem('VS_K'));
         } else {
             alert('LocalStorage is not supported.');
             return;
         }
 
         for (i = 0; i < cluster.k; i++) {
+            // init seriesData
             seriesData[i] = {
                 name: 'Cluster' + (i + 1),
                 data: []
             };
-            cluster.kcount[i] = 0;
+
+            // init cluster data
+            cluster.series[i] = {
+                originData: [],
+                count: 0
+            }
         }
 
         chart.count = data.V1.length;
@@ -57,22 +75,21 @@ var dataHandler = {
             var v4 = data.V4[i];
             var v5 = data.V5[i];
             var v6 = data.V6[i];
-            var c = data.cluster[i] - 1;
+            var k = data.cluster[i] - 1;
 
-            originData[i] = new Array();
-            originData[i][0] = v1;
-            originData[i][1] = v2;
-            originData[i][2] = v3;
-            originData[i][3] = v4;
-            originData[i][4] = v5;
-            originData[i][5] = v6;
+            var kcount = cluster.series[k].count;
+            // set seriesData
+            seriesData[k].data[kcount] = new Array();
+            seriesData[k].data[kcount][0] = v1;
+            seriesData[k].data[kcount][1] = v2;
+            seriesData[k].data[kcount][2] = v3;
+            // set cluster data
+            cluster.series[k].originData[kcount] = new Array();
+            cluster.series[k].originData[kcount][0] = v4;
+            cluster.series[k].originData[kcount][1] = v5;
+            cluster.series[k].originData[kcount][2] = v6;
 
-            var kcount = cluster.kcount[c];
-            seriesData[c].data[kcount] = new Array();
-            seriesData[c].data[kcount][0] = v1;
-            seriesData[c].data[kcount][1] = v2;
-            seriesData[c].data[kcount][2] = v3;
-            cluster.kcount[c]++;
+            cluster.series[k].count++;
 
             // find min and max of each axis
             if (i == 0){
@@ -109,6 +126,11 @@ var dataHandler = {
     }
 };
 
+/**
+ ***** Define All The Methods Related To Chart Handling
+ *
+ * [init3dChart] generate a new 3d chart and init some params
+ */
 var chartHandler = {
     init3dChart: function () {
         chart3d = new Highcharts.Chart({
@@ -133,6 +155,15 @@ var chartHandler = {
                 text: '3D Cluster Demonstration'
             },
             plotOptions: {
+                series: {
+                    point: {
+                        events: {
+                            click: function () {
+                                chartHandler.select3d(this);
+                            }
+                        }
+                    }
+                },
                 scatter: {
                     marker: {
                         symbol: 'circle',
@@ -164,9 +195,6 @@ var chartHandler = {
                 title: {
                     text: chart.axises.z.title,
                 }
-            },
-            legend: {
-                enabled: false
             },
             credits: {
                 enabled: false
@@ -201,33 +229,60 @@ var chartHandler = {
                 }
             });
         });
+    },
+    select3d: function (o) {
+        var x = o.x;
+        var y = o.y;
+        var z = o.z;
+        var k = o.series._i;
+        var index = o.index;
+        var name = o.series.name;
+
+        var origin = cluster.series[k].originData[index];
+        var xText = origin[0];
+        var yText = origin[1];
+        var zText = origin[2];
+
+        $('#spCluster').html(name);
+        $('#spXInfo').html(chart.axises.x.title + ' (' + x + ') : ' + xText);
+        $('#spYInfo').html(chart.axises.y.title + ' (' + y + ') : ' + yText);
+        $('#spZInfo').html(chart.axises.z.title + ' (' + z + ') : ' + zText);
     }
 };
 
+/**
+ ***** Define All The Methods Related To Cluster Handling
+ *
+ * [init] generate cluster selection and show these on the page
+ * [showClusterData] get all data from given k and show these on the page
+ */
 var clusterHandler = {
     init: function () {
         // add cluster selection
-        var cstr = '';
+        var str = '';
         for (var i = 0; i < cluster.k; i++) {
-            cstr += '<span id=\"c' + (i + 1) + '\">' + seriesData[i].name + ' (' + cluster.kcount[i] + ')</span>';
+            str += '<span id=\"c' + (i + 1) + '\">' + seriesData[i].name + ' (' + cluster.series[i].count + ')</span>';
         }
-        $('#clusterInfo .clusters').empty().append(cstr);
+        $('#clusterInfo .clusters').empty().append(str);
 
-        // default select cluster1
+        // set default selection - cluster1
         $('#c1').addClass('active');
-        this.showClusterData(1);
+        this.showClusterData(0);
     },
-    showClusterData: function (c) {
-        var data = seriesData[c].data;
+    showClusterData: function (k) {
+        var chartData = seriesData[k].data;
+        var originData = cluster.series[k].originData;
+        var count = cluster.series[k].count;
         var str = '';
 
-        for (var i = 0; i < data.length; i++) {
-            var dataItem = data[i];
-            for (var j = 0; j < dataItem.length - 1; j++) {
-                str += dataItem[j] + ', ';
+        for (var i = 0; i < count; i++) {
+            var cItem = chartData[i];
+            var oItem = originData[i];
+            for (var j = 0; j < cItem.length - 1; j++) {
+                str += cItem[j] + '(' + oItem[j] + '), ';
             }
 
-            str += dataItem[j] + '<br />';
+            str += cItem[j] + '(' + oItem[j] + ')<br />';
         }
 
         $('#clusterInfo .all').empty().append(str);
@@ -238,4 +293,11 @@ $(function () {
     dataHandler.init();
     chartHandler.init3dChart();
     clusterHandler.init();
+
+    $('#clusterInfo .clusters').on('click', 'span', function () {
+        var k = $(this).attr('id').replace(/[a-z]/ig, '') - 1;
+        clusterHandler.showClusterData(k);
+        $('#clusterInfo .clusters span').removeClass('active');
+        $(this).addClass('active');
+    });
 });

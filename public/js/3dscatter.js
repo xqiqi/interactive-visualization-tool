@@ -1903,7 +1903,7 @@ $(function () {
                     dim: 3
                 }
             })
-            .then(function (res) {
+            .done(function (res) {
                 if (window.localStorage) {
                     localStorage.setItem("VS_DATA_K", res);
                     localStorage.setItem("VS_K", k);
