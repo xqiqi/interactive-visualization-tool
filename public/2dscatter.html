@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viwport" content="width=device-width, initial-scale=1.0">
+    <title>Data Interaction</title>
+    <link rel="stylesheet" href="css/all.css" />
+</head>
+<body>
+
+<div id="operation">
+    <div id="contentS">
+        <h1>2D</h1>
+
+        <div class="selected">
+            <p><b>Selected Point :</b> <span id="spSelectedS">NOTHING SELECTED</span></p>
+            <p>
+                <b>Selected Information : </b><br />
+                <span id="spXInfoS">x : NOTHING SELECTED</span><br />
+                <span id="spYInfoS">y : NOTHING SELECTED</span><br />
+            </p>
+        </div>
+
+        <div class="cluster">
+            <p><b>K-means Cluster :</b></p>
+            <input id="kmeansInput" type="text" placeholder="Please type in the k value..."/><button id="goCluster">Go Cluster</button>
+        </div>
+    </div>
+</div>
+
+<div id="content">
+    <div id="chart2d"></div>
+
+    <div id="moveDot" style="display: none;"></div>
+    <div id="moveInfo" style="display: none;">
+        You have chosen the Point <span id="spMoving">(x, y)</span>.<br />
+        Please move to the Point that you want and click.
+    </div>
+</div>
+
+<script src="http://cdn.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>
+<script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+<script src="js/2dscatter.js"></script>
+</body>
+</html>
