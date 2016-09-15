@@ -11,7 +11,7 @@ getCluster <- function (o) {
     d <- read.table(path, header=FALSE, sep=",", encoding="UTF-8")
 
     if (dim == 2) {
-        data <- d[1:2]
+        data <- scale(d[1:2])
 
         if (ignored[1] == TRUE) {
             data <- subset(data, select=-V1)
@@ -20,7 +20,7 @@ getCluster <- function (o) {
             data <- subset(data, select=-V2)
         }
     } else if (dim ==3) {
-        data <- d[1:3]
+        data <- scale(d[1:3])
 
         if (ignored[1] == TRUE) {
             data <- subset(data, select=-V1)

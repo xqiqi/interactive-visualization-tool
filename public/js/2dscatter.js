@@ -36,7 +36,7 @@ var chart = {
     }
 };
 var DATA_CASES = {
-    DIGITAL_TWO_TEXT_ZERO: 0, // no axis can be interacted
+    DIGITAL_TWO_TEXT_ZERO: 0,   // no axis can be interacted
     DIGITAL_ONE_TEXT_ONE: 1,    // x axis can be interacted
     DIGITAL_ZERO_TEXT_TW0: 2    // x and y axises can be interacted
 };
