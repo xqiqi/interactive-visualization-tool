@@ -50,3 +50,43 @@ get3dData <- function (o) {
     data <- data.frame(v1, v2, v3, v4, v5, v6)
     return(toJSON(data))
 }
+
+get3dInitData <- function (o) {
+    o <- fromJSON(o)
+    path <- paste(root,o$path,sep="")
+    hasHeader <- as.logical(o$hasHeader)
+    dataCase <- as.numeric(o$dataCase)
+    colTypes <- as.numeric(o$colTypes)
+
+    d <- read.table(path, header=hasHeader, sep=",", col.names=c("c1", "c2", "c3"), encoding="UTF-8")
+
+    if (dataCase == 1 && colTypes[1] == 2 && colTypes[2] == 2 && colTypes[3] == 1) {
+        v1 <- as.numeric(d$c3)
+        v2 <- as.numeric(d$c1)
+        v3 <- as.numeric(d$c2)
+    } else if (dataCase == 1 && colTypes[1] == 2 && colTypes[2] == 1 && colTypes[3] == 2) {
+        v1 <- as.numeric(d$c2)
+        v2 <- as.numeric(d$c1)
+        v3 <- as.numeric(d$c3)
+    } else if (dataCase == 2 && colTypes[1] == 2 && colTypes[2] == 1 && colTypes[3] == 1) {
+        v1 <- as.numeric(d$c2)
+        v2 <- as.numeric(d$c1)
+        v3 <- as.numeric(d$c3)
+    } else if (dataCase == 2 && colTypes[1] == 1 && colTypes[2] == 1 && colTypes[3] == 2) {
+        v1 <- as.numeric(d$c1)
+        v2 <- as.numeric(d$c3)
+        v3 <- as.numeric(d$c2)
+
+        data <- data.frame(v1, v2, v3)
+        ds <- scale(data)
+    } else {
+        v1 <- as.numeric(d$c1)
+        v2 <- as.numeric(d$c2)
+        v3 <- as.numeric(d$c3)
+    }
+
+    kc <- kmeans(ds, 2000)
+    data$cluster <- kc$cluster
+    newData <- aggregate(. ~ data$cluster, data = data[,1:3], function(x) c(Mean=floor(mean(x)), GeoMean=floor(exp(mean(log(x))))))
+    return(toJSON(newData))
+}

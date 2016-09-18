@@ -57,14 +57,19 @@
         </div>
 
         <div class="cluster">
-            <p><b>K-means Cluster :</b></p>
-            <input id="kmeansInput" type="text" placeholder="Please type in the k value..."/><button id="goCluster">Go Cluster</button>
-            <div id="kmeansCheck">
-                Ingored Axises : 
-                <label><input id="ckx" type="checkbox" />x</label> 
-                <label><input id="cky" type="checkbox" />y</label> 
-                <label><input id="ckz" type="checkbox" />z</label> 
+            <p><b>Clustering :</b></p>
+            <select id="clusterSelector">
+                <option value="1">K-means</option>
+                <option value="2">DBSCAN</option>
+            </select>
+            <div class="kmeans">
+                <input id="kmeansK" type="text" placeholder="Please type in the k value..."/>
             </div>
+            <div class="dbscan" style="display:none;">
+                <input id="dbscanEps" type="text" placeholder="eps..." /><input id="dbscanMinPts" type="text" placeholder="minPts..." />
+            </div>
+
+            <button id="goCluster">Go Cluster!</button>
         </div>
     </div>
 

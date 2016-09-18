@@ -108,6 +108,7 @@ $(function () {
                     break;
                 case 3:
                     window.location.href = '3dscatter.html';
+                    //window.location.href = '3dtest.html';
                     break;
                 default:
                     break;

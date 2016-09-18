@@ -123,6 +123,7 @@ var dataHandler = {
 
         chart.count = data.v1.length;
         for (i = 0; i < chart.count; i++) {
+        //for (i = 0; i < 1000; i++) {
             // get all fields in data
             var v1 = data.v1[i];
             var v2 = data.v2[i];
@@ -200,9 +201,22 @@ var dataHandler = {
         $('#ry .rMax').html(chart.axises.y.max);
         $('#rz .rMax').html(chart.axises.z.max);
 
-        chart.axises.x.title = colNames[0];
-        chart.axises.y.title = colNames[1];
-        chart.axises.z.title = colNames[2];
+        // not corect
+        // need to be fixed
+        // ...
+        switch (dataCase) {
+            case DATA_CASES.DIGITAL_THREE_TEXT_ZERO:
+
+            case DATA_CASES.DIGITAL_TWO_TEXT_ONE:
+
+            case DATA_CASES.DIGITAL_ONE_TEXT_TW0:
+                chart.axises.x.title = colNames[0];
+                chart.axises.y.title = colNames[2];
+                chart.axises.z.title = colNames[1];
+                break;
+            case DATA_CASES.DIGITAL_ZERO_TEXT_THREE:
+
+        }
     },
     update3dData: function (x1, y1, z1, x2, y2, z2) {
         for (var i = 0; i < scatter3dData.length; i++) {
@@ -690,7 +704,7 @@ var chartHandler = {
                     alpha: 10,
                     beta: 30,
                     depth: 2000,
-                    viewDistance: 1,
+                    viewDistance: 5,
                     frame: {
                         bottom: { size: 1, color: 'rgba(0,0,0,0.02)' },
                         back: { size: 1, color: 'rgba(0,0,0,0.04)' },
@@ -794,7 +808,7 @@ var chartHandler = {
                 beta = chart3d.options.chart.options3d.beta,
                 newAlpha,
                 newBeta,
-                sensitivity = 5; // lower is more sensitive
+                sensitivity = 10; // lower is more sensitive
 
             $(document).bind({
                 'mousemove.hc touchdrag.hc': function (e) {
@@ -1868,19 +1882,45 @@ $(function () {
     });
 
     // cluster
-    $('#goCluster').click(function () {
-        var k = $('#kmeansInput').val() ? $('#kmeansInput').val() : 0;
-        if (k < 1 || parseInt(k) == NaN) {
-            alert('Invalid k value!');
-            return;
+    $('#clusterSelector').change(function () {
+        var value = parseInt($(this).val());
+        switch (value) {
+            case 1:
+                // kmeans
+                $('.dbscan').hide();
+                $('.kmeans input').val('');
+                $('.kmeans').show();
+                break;
+            case 2:
+                // dbscan
+                $('.kmeans').hide();
+                $('.dbscan input').val('');
+                $('.dbscan').show();
+                break;
         }
+    });
+    $('#goCluster').click(function () {
+        var ctype = parseInt($('#clusterSelector').val());
+        var cdata = {};
 
-        var cks = $('#kmeansCheck').find('input[type=checkbox]');
-        var arr = [false, false, false];
-        for (var i = 0; i < cks.length; i++) {
-            if (cks.eq(i).is(':Checked')) {
-                arr[i] = true;
-            }
+        switch (ctype) {
+            case 1:
+                // kmeans
+                cdata.k = $('#kmeansK').val() ? parseInt($('#kmeansK').val()) : 0;
+                if (cdata.k < 1 || isNaN(cdata.k)) {
+                    alert('Invalid input!');
+                    return;
+                }
+                break;
+            case 2:
+                // dbscan
+                cdata.eps = $('#dbscanEps').val() ? parseInt($('#dbscanEps').val()) : 0;
+                cdata.minpts = $('#dbscanMinPts').val() ? parseInt($('#dbscanMinPts').val()) : 0;
+                if (cdata.eps < 1 || cdata.minpts < 1 || isNaN(cdata.eps) || isNaN(cdata.minpts)) {
+                    alert('Invalid input!');
+                    return;
+                }
+                break;
         }
 
         // store originData to a tmp file and let R to call the tmp file
@@ -1898,15 +1938,14 @@ $(function () {
                 url: '/data/cluster',
                 dataType: 'json',
                 data: {
-                    k: k,
-                    ignored: arr,
-                    dim: 3
+                    dim: 3,
+                    type: ctype,
+                    param: cdata
                 }
             })
             .done(function (res) {
                 if (window.localStorage) {
                     localStorage.setItem("VS_DATA_K", res);
-                    localStorage.setItem("VS_K", k);
                 } else {
                     alert("LocalStorage is not supported.");
                 }

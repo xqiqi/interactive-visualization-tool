@@ -47,11 +47,12 @@ var dataHandler = {
         if (window.localStorage) {
             data = JSON.parse(localStorage.getItem('VS_DATA_K') ? localStorage.getItem('VS_DATA_K') : '');
             colNames = localStorage.getItem('VS_COL_NAMES').split(',');
-            cluster.k = parseInt(localStorage.getItem('VS_K'));
         } else {
             alert('LocalStorage is not supported.');
             return;
         }
+
+        cluster.k = Math.max.apply(Math,data.cluster);
 
         for (i = 0; i < cluster.k; i++) {
             // init seriesData

@@ -23,6 +23,19 @@ button{
 input[type=text]{
     border: 0;
     outline: medium;
+    color: #333;
+}
+select{
+    border: 0;
+    border-radius: 0;
+    outline: medium;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    background: url(../img/triangle-d.png) no-repeat scroll right center transparent;
+    padding-right: 14px;
+    padding-left: 6px;
+    color: #333;
 }
 a{
     color: #00a190;
@@ -46,7 +59,7 @@ a:hover{
     padding-left: 300px;
 }
 #chart3d,#chart2d{
-    height: 700px;
+    height: 900px;
     margin-bottom: 50px;
 }
 
@@ -83,21 +96,41 @@ a:hover{
 #btnMergeX{
     right: 190px;
 }
+
+
+#clusterSelector{
+    width: 260px;
+    height: 22px;
+    background-color: #fff;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
 #kmeansCheck{
     margin-top: 10px;
 }
-#kmeansInput{
-    width: 170px;
+.kmeans input{
+    width: 250px;
     height: 22px;
     padding: 0 5px;
-    border-radius: 5px 0 0 5px;
+    border-radius: 5px;
+}
+.dbscan input{
+    height: 22px;
+    border-radius: 5px;
+    padding: 0 5px;
+    margin: 0;
+    width: 115px;
+}
+.dbscan input:nth-child(2){
+    margin-left: 10px;
 }
 #goCluster{
-    width: 80px;
+    width: 260px;
     height: 22px;
-    border-radius: 0 5px 5px 0;
+    border-radius: 5px;
     background-color: #ffcc50;
     color: #fff;
+    margin-top: 10px;
 }
 #goCluster:hover{
     background-color: #fc7408;
@@ -164,7 +197,7 @@ a:hover{
 /* for cluster css */
 #clusterContent{
     width: 100%;
-    height: 700px;
+    height: 900px;
 }
 #clusterInfo{
     width: 100%;
