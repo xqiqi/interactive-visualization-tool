@@ -95,6 +95,7 @@ $(function () {
             if (window.localStorage) {
                 localStorage.setItem("VS_DATA", res);
                 localStorage.setItem("VS_COL_NAMES", file.colNames.toString());
+                localStorage.setItem("VS_COL_TYPES", file.colTypes.toString());
                 localStorage.setItem("VS_DATA_CASE", file.dataCase);
             } else {
                 alert("LocalStorage is not supported.");

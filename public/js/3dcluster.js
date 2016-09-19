@@ -32,6 +32,12 @@ var chart = {
         }
     }
 }
+var DATA_CASES = {
+    DIGITAL_THREE_TEXT_ZERO: 0, // no axis can be interacted
+    DIGITAL_TWO_TEXT_ONE: 1,    // x axis can be interacted
+    DIGITAL_ONE_TEXT_TW0: 2,    // x and z axises can be interacted
+    DIGITAL_ZERO_TEXT_THREE: 3  // all axises can be interacted
+};
 
 /**
  ***** Define All The Methods Related To Data Handling
@@ -42,11 +48,15 @@ var dataHandler = {
     init: function () {
         var data = null;
         var colNames = [];
+        var colTypes = [];
+        var dataCase = 0;
         var i = 0;
 
         if (window.localStorage) {
             data = JSON.parse(localStorage.getItem('VS_DATA_K') ? localStorage.getItem('VS_DATA_K') : '');
             colNames = localStorage.getItem('VS_COL_NAMES').split(',');
+            colTypes = localStorage.getItem('VS_COL_TYPES').split(',');
+            dataCase = parseInt(localStorage.getItem('VS_DATA_CASE'));
         } else {
             alert('LocalStorage is not supported.');
             return;
@@ -121,9 +131,24 @@ var dataHandler = {
             }
         }
 
-        chart.axises.x.title = colNames[0];
-        chart.axises.y.title = colNames[1];
-        chart.axises.z.title = colNames[2];
+        if (dataCase == DATA_CASES.DIGITAL_TWO_TEXT_ONE && colTypes[0] == 2 && colTypes[1] == 2 && colTypes[2] == 1) {
+            chart.axises.x.title = colNames[2];
+            chart.axises.y.title = colNames[0];
+            chart.axises.z.title = colNames[1];
+        } else if ((dataCase == DATA_CASES.DIGITAL_TWO_TEXT_ONE && colTypes[0] == 2 && colTypes[1] == 1 && colTypes[2] == 2) || 
+            (dataCase == DATA_CASES.DIGITAL_ONE_TEXT_TW0 && colTypes[0] == 2 && colTypes[1] == 1 && colTypes[2] == 1)) {
+            chart.axises.x.title = colNames[1];
+            chart.axises.y.title = colNames[0];
+            chart.axises.z.title = colNames[2];
+        } else if (dataCase == DATA_CASES.DIGITAL_ONE_TEXT_TW0 && colTypes[0] == 1 && colTypes[1] == 1 && colTypes[2] == 2) {
+            chart.axises.x.title = colNames[0];
+            chart.axises.y.title = colNames[2];
+            chart.axises.z.title = colNames[1];
+        } else {
+            chart.axises.x.title = colNames[0];
+            chart.axises.y.title = colNames[1];
+            chart.axises.z.title = colNames[2];
+        }
     }
 };
 

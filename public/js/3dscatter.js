@@ -109,12 +109,14 @@ var dataHandler = {
     init: function () {
         var data = null;
         var colNames = [];
+        var colTypes = [];
         var i = 0;
 
         // get data from localStorage
         if (window.localStorage) {
             data = JSON.parse(localStorage.getItem('VS_DATA') ? localStorage.getItem('VS_DATA') : '');
             colNames = localStorage.getItem('VS_COL_NAMES').split(',');
+            colTypes = localStorage.getItem('VS_COL_TYPES').split(',');
             dataCase = parseInt(localStorage.getItem('VS_DATA_CASE'));
         } else {
             alert('LocalStorage is not supported.');
@@ -201,21 +203,23 @@ var dataHandler = {
         $('#ry .rMax').html(chart.axises.y.max);
         $('#rz .rMax').html(chart.axises.z.max);
 
-        // not corect
-        // need to be fixed
-        // ...
-        switch (dataCase) {
-            case DATA_CASES.DIGITAL_THREE_TEXT_ZERO:
-
-            case DATA_CASES.DIGITAL_TWO_TEXT_ONE:
-
-            case DATA_CASES.DIGITAL_ONE_TEXT_TW0:
-                chart.axises.x.title = colNames[0];
-                chart.axises.y.title = colNames[2];
-                chart.axises.z.title = colNames[1];
-                break;
-            case DATA_CASES.DIGITAL_ZERO_TEXT_THREE:
-
+        if (dataCase == DATA_CASES.DIGITAL_TWO_TEXT_ONE && colTypes[0] == 2 && colTypes[1] == 2 && colTypes[2] == 1) {
+            chart.axises.x.title = colNames[2];
+            chart.axises.y.title = colNames[0];
+            chart.axises.z.title = colNames[1];
+        } else if ((dataCase == DATA_CASES.DIGITAL_TWO_TEXT_ONE && colTypes[0] == 2 && colTypes[1] == 1 && colTypes[2] == 2) || 
+            (dataCase == DATA_CASES.DIGITAL_ONE_TEXT_TW0 && colTypes[0] == 2 && colTypes[1] == 1 && colTypes[2] == 1)) {
+            chart.axises.x.title = colNames[1];
+            chart.axises.y.title = colNames[0];
+            chart.axises.z.title = colNames[2];
+        } else if (dataCase == DATA_CASES.DIGITAL_ONE_TEXT_TW0 && colTypes[0] == 1 && colTypes[1] == 1 && colTypes[2] == 2) {
+            chart.axises.x.title = colNames[0];
+            chart.axises.y.title = colNames[2];
+            chart.axises.z.title = colNames[1];
+        } else {
+            chart.axises.x.title = colNames[0];
+            chart.axises.y.title = colNames[1];
+            chart.axises.z.title = colNames[2];
         }
     },
     update3dData: function (x1, y1, z1, x2, y2, z2) {
