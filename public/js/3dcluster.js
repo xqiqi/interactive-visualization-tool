@@ -149,7 +149,16 @@ var dataHandler = {
             chart.axises.y.title = colNames[1];
             chart.axises.z.title = colNames[2];
         }
-    }
+    },
+    getSubject: function (value) {
+        // just hack for special case
+        for (var i = 0; i < subject.length; i++) {
+            if (subject[i][0] == value) {
+                return subject[i][1];
+            }
+        }
+        return 'undefined';
+    } 
 };
 
 /**
@@ -300,15 +309,43 @@ var clusterHandler = {
         var originData = cluster.series[k].originData;
         var count = cluster.series[k].count;
         var str = '';
+        // hack for special case
+        var subject = new Array();
+        var word = new Array();
+        var min = originData[0][1];
+        var max = originData[0][1];
 
         for (var i = 0; i < count; i++) {
             var cItem = chartData[i];
             var oItem = originData[i];
-            for (var j = 0; j < cItem.length - 1; j++) {
+            
+            var s = dataHandler.getSubject(oItem[0]);
+            str += cItem[0] + '(' + s + '), ';
+
+            for (var j = 1; j < cItem.length - 1; j++) {
                 str += cItem[j] + '(' + oItem[j] + '), ';
+
+                // hack for special case
+                if (oItem[1] < min) {
+                    min = oItem[1];
+                }
+                if (oItem[1] > max) {
+                    max = oItem[1];
+                }
             }
 
             str += cItem[j] + '(' + oItem[j] + ')<br />';
+
+            // hack for special case
+            if ($.inArray(s, subject) == -1) {
+                subject.push(s);
+            }
+            if ($.inArray(oItem[2], word) == -1) {
+                word.push(oItem[2]);
+            }
+            $('#clusterInfo .x').empty().append('<b>' + chart.axises.x.title + ': </b>' + subject.toString());
+            $('#clusterInfo .z').empty().append('<b>' + chart.axises.z.title + ': </b>' + word.toString());
+            $('#clusterInfo .y').empty().append('<b>' + chart.axises.y.title + ': </b>' + min + ' ~ ' + max);
         }
 
         $('#clusterInfo .all').empty().append(str);

@@ -221,7 +221,7 @@ a:hover{
 .clusters span:hover,.clusters .active{
     background-color: #00a190;
 }
-.all{
+.summary,.all{
     margin: 10px;
 }
 #selectInfo{
