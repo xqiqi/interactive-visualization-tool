@@ -681,16 +681,7 @@ var dataHandler = {
             }
         }
         return -1;
-    },
-    getSubject: function (value) {
-        // just hack for special case
-        for (var i = 0; i < subject.length; i++) {
-            if (subject[i][0] == value) {
-                return subject[i][1];
-            }
-        }
-        return 'undefined';
-    } 
+    }
 };
 
 /**
@@ -1476,8 +1467,8 @@ var chartHandler = {
 
         for (var i = 0; i < chart.count; i++) {
             if(originData[i][0] == x && originData[i][1] == y && originData[i][2] == z){
-                var xText = dataHandler.getSubject(originData[i][3]);
-                var yText = originData[i][4]
+                var xText = originData[i][3];
+                var yText = originData[i][4];
                 var zText = originData[i][5];
             }
         }
@@ -1503,13 +1494,11 @@ var chartHandler = {
                 break;
             case TYPE_OF_2D.BASE_Y:
             case TYPE_OF_2D.BASE_MERGE_Y:
-                xText = dataHandler.getSubject(xText);
                 $('#spXInfoS').html(chart.axises.x.title + ' (' + x + ') : ' + xText);
                 $('#spYInfoS').html(chart.axises.z.title + ' (' + y + ') : ' + yText);
                 break;
             case TYPE_OF_2D.BASE_Z:
             case TYPE_OF_2D.BASE_MERGE_Z:
-                xText = dataHandler.getSubject(xText);
                 $('#spXInfoS').html(chart.axises.x.title + ' (' + x + ') : ' + xText);
                 $('#spYInfoS').html(chart.axises.y.title + ' (' + y + ') : ' + yText);
                 break;
