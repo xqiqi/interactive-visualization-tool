@@ -56,8 +56,7 @@ var dataHandler = {
         if (window.localStorage) {
             data = JSON.parse(localStorage.getItem('VS_DATA') ? localStorage.getItem('VS_DATA') : '');
             colNames = localStorage.getItem('VS_COL_NAMES').split(',');
-            //dataCase = parseInt(localStorage.getItem('VS_DATA_CASE'));
-            dataCase = 1;
+            dataCase = parseInt(localStorage.getItem('VS_DATA_CASE'));
         } else {
             alert('LocalStorage is not supported.');
             return;
