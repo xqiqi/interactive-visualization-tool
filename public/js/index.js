@@ -1,6 +1,6 @@
 /**
  ***** the file that user uploads *****
- */
+ */ 
 var file = {
     path: 'uploads/fe2d32e04d31f8834936272841dfc4e9',
     dim: 3,
@@ -46,6 +46,10 @@ $(function () {
 
     // click start button
     $('#btnStart').click(function () {
+        timer = setInterval(function(){
+            clock++;
+        }, 1000);
+
         $('#divFile').hide();
         $('#loading').fadeIn();
         

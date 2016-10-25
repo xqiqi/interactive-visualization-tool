@@ -37,16 +37,21 @@ var dataHandler = {
     init: function () {
         var data = null;
         var colNames = [];
+        var colTypes = [];
+        var dataCase = 0;
         var i = 0;
 
         if (window.localStorage) {
             data = JSON.parse(localStorage.getItem('VS_DATA_K') ? localStorage.getItem('VS_DATA_K') : '');
             colNames = localStorage.getItem('VS_COL_NAMES').split(',');
-            cluster.k = parseInt(localStorage.getItem('VS_K'));
+            colTypes = localStorage.getItem('VS_COL_TYPES').split(',');
+            dataCase = parseInt(localStorage.getItem('VS_DATA_CASE'));
         } else {
             alert('LocalStorage is not supported.');
             return;
         }
+
+        cluster.k = Math.max.apply(Math,data.cluster);
 
         for (i = 0; i < cluster.k; i++) {
             // init seriesData
@@ -103,8 +108,8 @@ var dataHandler = {
             }
         }
 
-        chart.axises.x.title = colNames[0];
-        chart.axises.y.title = colNames[1];
+        chart.axises.x.title = colNames[1];
+        chart.axises.y.title = colNames[2];
     }
 };
 

@@ -31,9 +31,9 @@ getDbscan <- function (o) {
     d <- read.table(path, header=FALSE, sep=",", encoding="UTF-8")
 
     if (dim == 2) {
-        data <- d[1:2]
+        data <- scale(d[1:2])
     } else if (dim ==3) {
-        data <- d[1:3]
+        data <- scale(d[1:3])
     }
 
     kc <- dbscan(data, eps, minpts)

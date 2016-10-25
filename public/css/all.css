@@ -108,21 +108,12 @@ a:hover{
 #kmeansCheck{
     margin-top: 10px;
 }
-.kmeans input{
+.kmeans input,.dbscan input{
     width: 250px;
     height: 22px;
     padding: 0 5px;
     border-radius: 5px;
-}
-.dbscan input{
-    height: 22px;
-    border-radius: 5px;
-    padding: 0 5px;
-    margin: 0;
-    width: 115px;
-}
-.dbscan input:nth-child(2){
-    margin-left: 10px;
+    margin-bottom: 5px;
 }
 #goCluster{
     width: 260px;
@@ -222,7 +213,10 @@ a:hover{
     background-color: #00a190;
 }
 .summary,.all{
-    margin: 10px;
+    padding: 10px;
+}
+.summary .x,.y,.z{
+    margin-bottom: 10px;
 }
 #selectInfo{
     position: absolute;
@@ -234,4 +228,32 @@ a:hover{
     border-radius: 5px;
     z-index: 99;
     background-color: rgba(255,255,255,0.8);
+}
+
+/*exceptions page*/
+#allExceptions{
+    width: 80%;
+    margin: 20px 10%;
+    border: 1px solid #ffcc50;
+    border-collapse: collapse;
+}
+#allExceptions caption{
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 20px;
+}
+#allExceptions thead{
+    background-color: #ffcc50;
+    color: #fff;
+}
+#allExceptions tbody{
+    background-color: #fff;
+}
+#allExceptions td{
+    padding: 5px;
+    border: 1px solid #ffcc50;
+}
+#allExceptions .others{
+    background-color: #d0d0d0;
 }

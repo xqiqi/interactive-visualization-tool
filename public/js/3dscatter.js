@@ -125,7 +125,6 @@ var dataHandler = {
 
         chart.count = data.v1.length;
         for (i = 0; i < chart.count; i++) {
-        //for (i = 0; i < 1000; i++) {
             // get all fields in data
             var v1 = data.v1[i];
             var v2 = data.v2[i];
@@ -682,7 +681,16 @@ var dataHandler = {
             }
         }
         return -1;
-    }
+    },
+    getSubject: function (value) {
+        // just hack for special case
+        for (var i = 0; i < subject.length; i++) {
+            if (subject[i][0] == value) {
+                return subject[i][1];
+            }
+        }
+        return 'undefined';
+    } 
 };
 
 /**
@@ -1468,7 +1476,7 @@ var chartHandler = {
 
         for (var i = 0; i < chart.count; i++) {
             if(originData[i][0] == x && originData[i][1] == y && originData[i][2] == z){
-                var xText = originData[i][3];
+                var xText = dataHandler.getSubject(originData[i][3]);
                 var yText = originData[i][4]
                 var zText = originData[i][5];
             }
@@ -1495,11 +1503,13 @@ var chartHandler = {
                 break;
             case TYPE_OF_2D.BASE_Y:
             case TYPE_OF_2D.BASE_MERGE_Y:
+                xText = dataHandler.getSubject(xText);
                 $('#spXInfoS').html(chart.axises.x.title + ' (' + x + ') : ' + xText);
                 $('#spYInfoS').html(chart.axises.z.title + ' (' + y + ') : ' + yText);
                 break;
             case TYPE_OF_2D.BASE_Z:
             case TYPE_OF_2D.BASE_MERGE_Z:
+                xText = dataHandler.getSubject(xText);
                 $('#spXInfoS').html(chart.axises.x.title + ' (' + x + ') : ' + xText);
                 $('#spYInfoS').html(chart.axises.y.title + ' (' + y + ') : ' + yText);
                 break;
@@ -1920,11 +1930,24 @@ $(function () {
                 // dbscan
                 cdata.eps = $('#dbscanEps').val() ? parseInt($('#dbscanEps').val()) : 0;
                 cdata.minpts = $('#dbscanMinPts').val() ? parseInt($('#dbscanMinPts').val()) : 0;
-                if (cdata.eps < 1 || cdata.minpts < 1 || isNaN(cdata.eps) || isNaN(cdata.minpts)) {
+                if (cdata.eps < 0 || cdata.minpts < 0 || isNaN(cdata.eps) || isNaN(cdata.minpts)) {
                     alert('Invalid input!');
                     return;
                 }
                 break;
+        }
+
+        // get originData inside the range
+        var ax = chart.axises.x;
+        var ay = chart.axises.y;
+        var az = chart.axises.z;
+        for (var i = 0; i < originData.length; i++) {
+            if ((originData[i][0] < ax.min || originData[i][0] > ax.max) || 
+                (originData[i][1] < ay.min || originData[i][1] > ay.max) ||
+                (originData[i][2] < az.min || originData[i][2] > az.max)) {
+                originData.splice(i, 1);
+                i--;
+            }
         }
 
         // store originData to a tmp file and let R to call the tmp file
@@ -1933,7 +1956,8 @@ $(function () {
             url: '/createFile',
             dataType: 'json',
             data: {
-                data: JSON.stringify(originData)
+                //data: JSON.stringify(originData)
+                data: localStorage.getItem('VS_TEMP')
             }
         })
         .done(function () {

@@ -38,6 +38,8 @@ var DATA_CASES = {
     DIGITAL_ONE_TEXT_TW0: 2,    // x and z axises can be interacted
     DIGITAL_ZERO_TEXT_THREE: 3  // all axises can be interacted
 };
+var eData = [];
+var clusterSum = [];
 
 /**
  ***** Define All The Methods Related To Data Handling
@@ -158,7 +160,79 @@ var dataHandler = {
             }
         }
         return 'undefined';
-    } 
+    },
+    getExceptions: function () {
+        var data = JSON.parse(localStorage.getItem('VS_DATA') ? localStorage.getItem('VS_DATA') : '');
+        var i = 0;
+        var j = 0;
+        var k = 0;
+
+        for (i = 0; i < cluster.series.length; i++) {
+            var series = cluster.series[i].originData;
+            var s = [];
+            var w = [];
+            for (j = 0; j < series.length; j++) {
+                var subject = series[j][0];
+                var word = series[j][2];
+                if ($.inArray(subject, s) == -1) {
+                    s.push(subject);
+                }
+                if ($.inArray(word, w) == -1) {
+                    w.push(word);
+                }
+            }
+
+            clusterSum[i] = {
+                subjects: s,
+                words: w
+            };
+        }
+
+        for (i = 82; i < data.v1.length; i++) {
+            var v1 = data.v4[i];    // subject
+            var v2 = data.v5[i];
+            var v3 = data.v6[i];    // word
+            var sindex = [];
+            var windex = [];
+
+            //v1 in k1 and v3 not in k1 and v3 in k2 and v1 not in k2
+            for (j = 0; j < clusterSum.length; j++) {
+                if ($.inArray(v1, clusterSum[j].subjects) != -1) {
+                    sindex.push(j);
+                }
+                if ($.inArray(v3, clusterSum[j].words) != -1) {
+                    windex.push(j);
+                }
+            }
+
+            if (sindex.length > 0 && windex.length > 0 && this.getIntersect(sindex, windex)) {
+                /*if (v3 != '报' && 
+                    v3 != '转' && 
+                    v3 != '款' && 
+                    v3 != '汇' && 
+                    v3 != '付' && 
+                    v3 != '补') {*/
+                    eData[k] = new Array();
+                    eData[k][0] = this.getSubject(v1);
+                    eData[k][1] = v2;
+                    eData[k][2] = v3;
+                    k++;
+                //}
+            }
+
+            localStorage.setItem('EDATA', JSON.stringify(eData));
+        }
+    },
+    getIntersect: function (a, b) {
+        var flag = true;
+        $.each(a, function (index, value) {
+            if ($.inArray(value, b) != -1) {
+                flag = false;
+            }
+        });
+
+        return flag;
+    }
 };
 
 /**
@@ -321,20 +395,16 @@ var clusterHandler = {
             
             var s = dataHandler.getSubject(oItem[0]);
             str += cItem[0] + '(' + s + '), ';
+            str += cItem[1] + '(' + oItem[1] + '), ';
+            str += cItem[2] + '(' + oItem[2] + ')<br />';
 
-            for (var j = 1; j < cItem.length - 1; j++) {
-                str += cItem[j] + '(' + oItem[j] + '), ';
-
-                // hack for special case
-                if (oItem[1] < min) {
-                    min = oItem[1];
-                }
-                if (oItem[1] > max) {
-                    max = oItem[1];
-                }
+            // hack for special case
+            if (oItem[1] < min) {
+                min = oItem[1];
             }
-
-            str += cItem[j] + '(' + oItem[j] + ')<br />';
+            if (oItem[1] > max) {
+                 max = oItem[1];
+            }
 
             // hack for special case
             if ($.inArray(s, subject) == -1) {
@@ -343,10 +413,14 @@ var clusterHandler = {
             if ($.inArray(oItem[2], word) == -1) {
                 word.push(oItem[2]);
             }
-            $('#clusterInfo .x').empty().append('<b>' + chart.axises.x.title + ': </b>' + subject.toString());
-            $('#clusterInfo .z').empty().append('<b>' + chart.axises.z.title + ': </b>' + word.toString());
-            $('#clusterInfo .y').empty().append('<b>' + chart.axises.y.title + ': </b>' + min + ' ~ ' + max);
         }
+
+        var subjectStr = subject.toString();
+        var wordStr = word.toString();
+
+        $('#clusterInfo .x').empty().append('<b>' + chart.axises.x.title + ': </b><br />' + subjectStr.replace(/,/g, '<br />'));
+        $('#clusterInfo .z').empty().append('<b>' + chart.axises.z.title + ': </b><br />' + wordStr.replace(/,/g, '<br />'));
+        $('#clusterInfo .y').empty().append('<b>' + chart.axises.y.title + ': </b><br />' + min + ' ~ ' + max);
 
         $('#clusterInfo .all').empty().append(str);
     }
@@ -362,5 +436,9 @@ $(function () {
         clusterHandler.showClusterData(k);
         $('#clusterInfo .clusters span').removeClass('active');
         $(this).addClass('active');
+    });
+
+    $('#getEs').click(function () {
+        dataHandler.getExceptions();
     });
 });

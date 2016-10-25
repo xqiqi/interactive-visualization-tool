@@ -64,6 +64,7 @@ var dataHandler = {
         }
 
         chart.count = data.v1.length;
+        var k = 0;
         for (i = 0; i < chart.count; i++) {
             var v1 = data.v1[i];
             var v2 = data.v2[i];
@@ -72,31 +73,32 @@ var dataHandler = {
             var v5 = data.v5[i];
             var v6 = data.v6[i];
 
-            originData[i] = new Array();
-            originData[i][0] = v1;
-            originData[i][1] = v2;
-            //originData[i][2] = v3;
-            //originData[i][3] = v4;
-            originData[i][2] = v4;
-            originData[i][3] = v5;
+            if (v1 == 183 && v2 >= 100) {
+                originData[k] = new Array();
+                originData[k][0] = v3;
+                originData[k][1] = v2;
+                originData[k][2] = v6;
+                originData[k][3] = v5;
+                k++;
 
-            if (i == 0){
-                chart.axises.x.min = v1;
-                chart.axises.x.max = v1;
-                chart.axises.y.min = v2;
-                chart.axises.y.max = v2;
-            }
-            if (v1 < chart.axises.x.min) {
-                chart.axises.x.min = v1;
-            }
-            if (v2 < chart.axises.y.min){
-                chart.axises.y.min = v2;
-            }
-            if (v1 > chart.axises.x.max) {
-                chart.axises.x.max = v1;
-            }
-            if (v2 > chart.axises.y.max) {
-                chart.axises.y.max = v2;
+                if (i == 0){
+                    chart.axises.x.min = v3;
+                    chart.axises.x.max = v3;
+                    chart.axises.y.min = v2;
+                    chart.axises.y.max = v2;
+                }
+                if (v3 < chart.axises.x.min) {
+                    chart.axises.x.min = v3;
+                }
+                if (v2 < chart.axises.y.min){
+                    chart.axises.y.min = v2;
+                }
+                if (v3 > chart.axises.x.max) {
+                    chart.axises.x.max = v3;
+                }
+                if (v2 > chart.axises.y.max) {
+                    chart.axises.y.max = v2;
+                }
             }
         }
 
@@ -114,8 +116,8 @@ var dataHandler = {
         }
         chart.zone = zone;
 
-        chart.axises.x.title = colNames[0];
-        chart.axises.y.title = colNames[1];
+        chart.axises.x.title = colNames[1];
+        chart.axises.y.title = colNames[2];
     },
     update2dData: function (x1, y1, x2, y2) {
         for (var i = 0; i < originData.length; i++) {
@@ -401,10 +403,27 @@ $(function () {
 
     // cluster
     $('#goCluster').click(function () {
-        var k = $('#kmeansInput').val() ? $('#kmeansInput').val() : 0;
-        if (k < 1 || parseInt(k) == NaN) {
-            alert('Invalid k value!');
-            return;
+        var ctype = parseInt($('#clusterSelector').val());
+        var cdata = {};
+
+        switch (ctype) {
+            case 1:
+                // kmeans
+                cdata.k = $('#kmeansK').val() ? parseInt($('#kmeansK').val()) : 0;
+                if (cdata.k < 1 || isNaN(cdata.k)) {
+                    alert('Invalid input!');
+                    return;
+                }
+                break;
+            case 2:
+                // dbscan
+                cdata.eps = $('#dbscanEps').val() ? parseInt($('#dbscanEps').val()) : 0;
+                cdata.minpts = $('#dbscanMinPts').val() ? parseInt($('#dbscanMinPts').val()) : 0;
+                if (cdata.eps < 0 || cdata.minpts < 0 || isNaN(cdata.eps) || isNaN(cdata.minpts)) {
+                    alert('Invalid input!');
+                    return;
+                }
+                break;
         }
 
         // store originData to a tmp file and let R to call the tmp file
@@ -422,15 +441,14 @@ $(function () {
                 url: '/data/cluster',
                 dataType: 'json',
                 data: {
-                    k: k,
-                    ignored: [false, false],
-                    dim: 2
+                    dim: 2,
+                    type: ctype,
+                    param: cdata
                 }
             })
             .done(function (res) {
                 if (window.localStorage) {
                     localStorage.setItem("VS_DATA_K", res);
-                    localStorage.setItem("VS_K", k);
                 } else {
                     alert("LocalStorage is not supported.");
                 }
