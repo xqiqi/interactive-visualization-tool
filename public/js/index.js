@@ -2,11 +2,11 @@
  ***** the file that user uploads *****
  */ 
 var file = {
-    path: 'uploads/fe2d32e04d31f8834936272841dfc4e9',
-    dim: 3,
+    path: '',
+    dim: 0,
     hasHeader: false,
-    colNames: ['subject', 'word', 'count'],
-    colTypes: [1, 1, 2],
+    colNames: [],
+    colTypes: [],
     dataCase: 0
 }
 
@@ -54,17 +54,19 @@ $(function () {
         $('#loading').fadeIn();
         
         // get columns' properties
-        /*for (var i = 0; i < file.dim; i++) {
+        for (var i = 0; i < file.dim; i++) {
             file.colNames[i] = $('#col' + (i + 1) + 'name').val();
             file.colTypes[i] = parseInt($('#col' + (i + 1) + 'type').val());
         }
 
         // does the file has header
-        file.hasHeader = $('#firstRowCheck').is(':checked');*/
+        file.hasHeader = $('#firstRowCheck').is(':checked');
         
         // define the data case
         switch (file.dim) {
             case 2:
+                // TODO: to define data case of 2 dimension case
+                // ...
                 break;
             case 3:
                 var colTypes = file.colTypes;
@@ -86,6 +88,8 @@ $(function () {
                 }
                 break;
             default:
+                // TODO: multi-dimension case
+                // at present, this tool doesn't support multi-dimension (dimension >3) cases
                 break;
         }
         
@@ -113,7 +117,6 @@ $(function () {
                     break;
                 case 3:
                     window.location.href = '3dscatter.html';
-                    //window.location.href = '3dtest.html';
                     break;
                 default:
                     break;
